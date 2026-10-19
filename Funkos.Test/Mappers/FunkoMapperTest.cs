@@ -9,16 +9,25 @@ namespace Funkos.Test.Mappers;
 [TestFixture]
 public class FunkoMapperTest
 {
-    private FunkosDtoRequest _funkoDTORequest;
+    private FunkoCreateDto _createDto;
+    private FunkoUpdateDto _updateDto;
     private Funko funko;
     
     [SetUp]
     public void SetUp()
     {
-        _funkoDTORequest = new FunkosDtoRequest()
+        _updateDto = new FunkoUpdateDto()
+        {
+            Id = 1,
+            Name = "Cristian",
+            Precio = 24,
+            Categoria = 0
+        };
+        
+        _createDto = new FunkoCreateDto()
         {
             Name = "Cristian",
-            Precio = "24",
+            Precio = 24,
             Categoria = 0
         };
         
@@ -26,9 +35,11 @@ public class FunkoMapperTest
         {
             Id = 1,
             Name = "Cristian",
-            Precio = "24",
+            Precio = 24,
             Categoria = 0
         };
+        
+        
     }
     
     [Test]
@@ -36,14 +47,22 @@ public class FunkoMapperTest
     {
         
         // Act (ejecutar)
-        var funk = FunkoMapper.ToEntity(_funkoDTORequest);
+        var funkCreate = FunkoMapper.ToEntityCreate(_createDto);
+        var funkUpdate = FunkoMapper.ToEntityUpdate(_updateDto);
     
         // Assert (Validar con FluentAssertions --> Mas comprensible)
-        funk.Should().NotBeNull();  // Comprobamos que usuario no sea nulo
+        funkCreate.Should().NotBeNull();  // Comprobamos que usuario no sea nulo
         // Comprobamos que ningun valor llegue como nulo, vacio o cambiado
-        funk.Name.Should().Be(_funkoDTORequest.Name);
-        funk.Precio.Should().Be(_funkoDTORequest.Precio);
-        funk.Categoria.Should().Be(_funkoDTORequest.Categoria);
+        funkCreate.Name.Should().Be(_createDto.Name);
+        funkCreate.Precio.Should().Be(_createDto.Precio);
+        funkCreate.Categoria.Should().Be(_createDto.Categoria);
+        
+        funkUpdate.Should().NotBeNull();  // Comprobamos que usuario no sea nulo
+        // Comprobamos que ningun valor llegue como nulo, vacio o cambiado
+        funkUpdate.Id.Should().Be(_updateDto.Id);
+        funkUpdate.Name.Should().Be(_updateDto.Name);
+        funkUpdate.Precio.Should().Be(_updateDto.Precio);
+        funkUpdate.Categoria.Should().Be(_updateDto.Categoria);
     }
     
     [Test]

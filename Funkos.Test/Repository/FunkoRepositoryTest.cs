@@ -20,12 +20,11 @@ public class FunkoRepositoryTest
         {
             Id = 1,
             Name = "Cristian",
-            Precio = "24",
+            Precio = 24,
             Categoria = 0
         };
 
         repo.Create(funko);
-        
     }
     
     
@@ -52,7 +51,7 @@ public class FunkoRepositoryTest
         funkoId.Should().NotBeNull();
         funkoId.Id.Should().Be(1);
         funkoId.Name.Should().Be("Cristian");
-        funkoId.Precio.Should().Be("24");
+        funkoId.Precio.Should().Be(24);
         funkoId.Categoria.Should().Be(0);
     }
     
@@ -66,7 +65,7 @@ public class FunkoRepositoryTest
         funkoCreado.Should().NotBeNull();
         funkoCreado.Id.Should().Be(1);
         funkoCreado.Name.Should().Be("Cristian");
-        funkoCreado.Precio.Should().Be("24");
+        funkoCreado.Precio.Should().Be(24);
         funkoCreado.Categoria.Should().Be(0);
     }
     
@@ -77,7 +76,7 @@ public class FunkoRepositoryTest
         var funkoUpdate = new Funko()
         {
             Name = "Cristian actualizado",
-            Precio = "30",
+            Precio = 30,
             Categoria = 0
         };
         // Act
@@ -87,7 +86,7 @@ public class FunkoRepositoryTest
         funkActualizado.Should().NotBeNull();
         funkActualizado.Id.Should().Be(1);
         funkActualizado.Name.Should().Be("Cristian actualizado");
-        funkActualizado.Precio.Should().Be("30");
+        funkActualizado.Precio.Should().Be(30);
         funkActualizado.Categoria.Should().Be(0);
     }
     

@@ -34,3 +34,6 @@ C:\Users\Marcos\Documents\Proyectos\Back-end\C#\Funkos\Funkos\obj\Debug\net10.0\
 C:\Users\Marcos\Documents\Proyectos\Back-end\C#\Funkos\Funkos\bin\Debug\net10.0\CSharpFunctionalExtensions.dll
 C:\Users\Marcos\Documents\Proyectos\Back-end\C#\Funkos\Funkos\bin\Debug\net10.0\Microsoft.Extensions.DependencyModel.dll
 C:\Users\Marcos\Documents\Proyectos\Back-end\C#\Funkos\Funkos\bin\Debug\net10.0\Scrutor.dll
+C:\Users\Marcos\Documents\Proyectos\Back-end\C#\Funkos\Funkos\bin\Debug\net10.0\FluentValidation.dll
+C:\Users\Marcos\Documents\Proyectos\Back-end\C#\Funkos\Funkos\bin\Debug\net10.0\FluentValidation.AspNetCore.dll
+C:\Users\Marcos\Documents\Proyectos\Back-end\C#\Funkos\Funkos\bin\Debug\net10.0\FluentValidation.DependencyInjectionExtensions.dll
