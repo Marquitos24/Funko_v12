@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "ssitR/jOI8E=",
+  "dgSpecHash": "Tc9iRow9+lQ=",
   "success": true,
   "projectFilePath": "C:\\Users\\Marcos\\Documents\\Proyectos\\Back-end\\C#\\Funkos\\Funkos\\Funkos.csproj",
   "expectedPackageFiles": [
@@ -11,7 +11,16 @@
     "C:\\Users\\Marcos\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.12\\microsoft.aspnetcore.openapi.10.0.12.nupkg.sha512",
     "C:\\Users\\Marcos\\.nuget\\packages\\microsoft.extensions.dependencymodel\\10.0.0\\microsoft.extensions.dependencymodel.10.0.0.nupkg.sha512",
     "C:\\Users\\Marcos\\.nuget\\packages\\microsoft.openapi\\2.12.0\\microsoft.openapi.2.12.0.nupkg.sha512",
-    "C:\\Users\\Marcos\\.nuget\\packages\\scrutor\\7.0.0\\scrutor.7.0.0.nupkg.sha512"
+    "C:\\Users\\Marcos\\.nuget\\packages\\scrutor\\7.0.0\\scrutor.7.0.0.nupkg.sha512",
+    "C:\\Users\\Marcos\\.nuget\\packages\\serilog\\4.4.1-dev-02447\\serilog.4.4.1-dev-02447.nupkg.sha512",
+    "C:\\Users\\Marcos\\.nuget\\packages\\serilog.aspnetcore\\10.0.1-dev-02312\\serilog.aspnetcore.10.0.1-dev-02312.nupkg.sha512",
+    "C:\\Users\\Marcos\\.nuget\\packages\\serilog.extensions.hosting\\10.0.0\\serilog.extensions.hosting.10.0.0.nupkg.sha512",
+    "C:\\Users\\Marcos\\.nuget\\packages\\serilog.extensions.logging\\10.0.0\\serilog.extensions.logging.10.0.0.nupkg.sha512",
+    "C:\\Users\\Marcos\\.nuget\\packages\\serilog.formatting.compact\\3.0.0\\serilog.formatting.compact.3.0.0.nupkg.sha512",
+    "C:\\Users\\Marcos\\.nuget\\packages\\serilog.settings.configuration\\10.0.0\\serilog.settings.configuration.10.0.0.nupkg.sha512",
+    "C:\\Users\\Marcos\\.nuget\\packages\\serilog.sinks.console\\6.1.1\\serilog.sinks.console.6.1.1.nupkg.sha512",
+    "C:\\Users\\Marcos\\.nuget\\packages\\serilog.sinks.debug\\3.0.0\\serilog.sinks.debug.3.0.0.nupkg.sha512",
+    "C:\\Users\\Marcos\\.nuget\\packages\\serilog.sinks.file\\8.0.0-nblumhardt-02322\\serilog.sinks.file.8.0.0-nblumhardt-02322.nupkg.sha512"
   ],
   "logs": []
 }

@@ -27,8 +27,4 @@
     <ProjectReference Include="..\Funkos\Funkos.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Validations\" />
-  </ItemGroup>
-
 </Project>

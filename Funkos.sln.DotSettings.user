@@ -1,4 +1,5 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003ADouble_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E3_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003F77d2994f32f84ff283137ebf44feba98f4a728_003F25_003F35b93d2f_003FDouble_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=20220536_002D25fb_002D454a_002D806d_002D71af34cecd37/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="FunkoMapperTest #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;NUnit3x::3875B0F7-3003-055F-4A58-79DD5FE07B84::net10.0::Funkos.Test.Mappers.FunkoMapperTest&lt;/TestId&gt;&#xD;
@@ -7,6 +8,7 @@
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=43c0fe18_002Dc32c_002D43d1_002Dbbe7_002D43f201728a08/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="NotFoundError_Reotna_404_FormId_ErrorIdentificador" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;NUnit3x::3875B0F7-3003-055F-4A58-79DD5FE07B84::net10.0::Funkos.Test.Services.FunkoServiceTest&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::3875B0F7-3003-055F-4A58-79DD5FE07B84::net10.0::Funkos.Test.Validations.UpdateFunkoValidation_Test&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=4ad1b37a_002Dd22a_002D4447_002Db5f2_002D54f91cdaed0b/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="ToEntity_Ok" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
@@ -34,6 +36,11 @@
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=d77ae76c_002Df86d_002D4e15_002D97a3_002D6fd2370dde9f/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="ToDTOResponse_Ok" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;NUnit3x::3875B0F7-3003-055F-4A58-79DD5FE07B84::net10.0::Funkos.Test.Mappers.FunkoMapperTest.ToDTOResponse_Ok&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=e18faa73_002D886e_002D4e3d_002D9a24_002D157faf88b558/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="CreateFunkoValidation_Test" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::3875B0F7-3003-055F-4A58-79DD5FE07B84::net10.0::Funkos.Test.Validations.CreateFunkoValidation_Test&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=f6e78160_002Dc8a8_002D441b_002Da33a_002D879203dc517a/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="All tests from Solution" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;

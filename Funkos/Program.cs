@@ -2,11 +2,14 @@ using System.Text.Json.Serialization;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Funkos.Infrastructure;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
-
+// appsettings.json + appsettings.{Environment}.json + variables de entorno
+//var miConfig = builder.Configuration.GetSection("Application").Get<AppConfig>();
+    
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddProblemDetails();
 // Registrar los validators --> NO ejecuta la validación por sí solo
@@ -36,6 +39,12 @@ builder.Services.AddControllers()
 // Ejecución automática vía action filter --> Paquete FluentValidation .AspNetCore
 // Requiere llamarse DESPUÉS de AddControllers() = Solo funciona en MVC/controllers
 builder.Services.AddFluentValidationAutoValidation();
+
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .CreateLogger();
+
+builder.Host.UseSerilog(); // <- Aquí conectas Serilog con el sistema de ILogger de .NET y lo Sustitulles
 
 
 var app = builder.Build();

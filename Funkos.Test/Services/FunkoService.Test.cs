@@ -7,6 +7,7 @@ using Funkos.Models;
 using Funkos.Repositories;
 using Funkos.Service;
 using Moq;
+using Microsoft.Extensions.Logging;
 
 namespace Funkos.Test.Services;
 
@@ -17,6 +18,7 @@ public class FunkoServiceTest
     private FunkoUpdateDto _updateDto;
     private FunkoCreateDto _createDto;
     private FunkosDtoResponse _responseDto;
+    private Mock<ILogger<FunkoService>> _loggerMock;
     private Mock<IValidator<FunkoCreateDto>> _validatorCreateMock;
     private Mock<IValidator<FunkoUpdateDto>> _validatorUpdateMock;
     private Mock<IFunkoRepository> _funkoRepositoryMock = null;
@@ -26,10 +28,11 @@ public class FunkoServiceTest
     public void SetUp()
     {
         _funkoRepositoryMock = new Mock<IFunkoRepository>();
+        _loggerMock = new Mock<ILogger<FunkoService>>();
         
         _validatorCreateMock = new Mock<IValidator<FunkoCreateDto>>();
         _validatorUpdateMock = new Mock<IValidator<FunkoUpdateDto>>();
-        _service = new FunkoService(_funkoRepositoryMock.Object, _validatorCreateMock.Object, _validatorUpdateMock.Object);
+        _service = new FunkoService(_funkoRepositoryMock.Object, _validatorCreateMock.Object, _validatorUpdateMock.Object, _loggerMock.Object);
         
         
         _funkos = new List<Funko>()
