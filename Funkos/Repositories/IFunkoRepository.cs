@@ -9,4 +9,5 @@ public interface IFunkoRepository
     Funko Create(Funko newFunko);
     Funko? Update(long id, Funko updatedFunko);
     bool Delete(long id);
-}
+  
+}   

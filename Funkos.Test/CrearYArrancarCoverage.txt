@@ -1,0 +1,9 @@
+# Ejecutar tests con informe de cobertura
+dotnet test --collect:"XPlat Code Coverage"
+
+# Generar informe HTML (necesita dotnet-reportgenerator-globaltool)
+dotnet tool install -g dotnet-reportgenerator-globaltool
+reportgenerator -reports:"TestResults/**/coverage.cobertura.xml" -targetdir:"CoverageReport"
+
+
+start CoverageReport\index.html --> Iniciarlo

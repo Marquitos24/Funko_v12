@@ -14,6 +14,7 @@ public class FunkoRepositoryTest
     [SetUp]
     public void SetUp()
     {
+        FunkoRepository.ResetState();
         repo = new FunkoRepository();
 
         funko = new Funko()
@@ -23,8 +24,6 @@ public class FunkoRepositoryTest
             Precio = 24,
             Categoria = 0
         };
-
-        repo.Create(funko);
     }
     
     
@@ -32,6 +31,7 @@ public class FunkoRepositoryTest
     [Test]
     public void GetAll_RetornaListaFunkos()
     {
+        repo.Create(funko);
         // Act
         var devolverTodos = repo.GetAll();
 
@@ -44,6 +44,7 @@ public class FunkoRepositoryTest
     [Test]
     public void GetById_RetornaFunko()
     {
+        repo.Create(funko);
         // Act
         var funkoId = repo.GetById(funko.Id);
 
@@ -58,6 +59,7 @@ public class FunkoRepositoryTest
     [Test]
     public void Create_RetornaDatosFunko()
     {
+
         // Act
         var funkoCreado = repo.Create(funko);
 
@@ -72,13 +74,16 @@ public class FunkoRepositoryTest
     [Test]
     public void Update_RetornaDatosFunko()
     {
+        
         // Arrange
+        repo.Create(funko);
         var funkoUpdate = new Funko()
         {
             Name = "Cristian actualizado",
             Precio = 30,
             Categoria = 0
         };
+        
         // Act
         var funkActualizado = repo.Update(1, funkoUpdate);
 
@@ -94,7 +99,7 @@ public class FunkoRepositoryTest
     public void Delete_RetornaDatosFunko()
     {
         // Arrange
-        
+        repo.Create(funko);
         // Act
         var funkEliminado = repo.Delete(1);
 

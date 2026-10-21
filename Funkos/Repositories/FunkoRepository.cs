@@ -55,4 +55,11 @@ public class FunkoRepository : IFunkoRepository
         return true;
     }
     
+    //Para testear
+    public static void ResetState()
+    {
+        _funkos.Clear();
+        _nextId = 1;
+    }
+    
 }
