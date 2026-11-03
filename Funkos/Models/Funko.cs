@@ -1,29 +1,24 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Funkos.Validations;
-
-namespace Funkos.Models;
+﻿namespace Funkos.Models;
 
 public record Funko
 {
     public long Id { get; init; }
     
-    [Required (ErrorMessage =  "El nombre del funko es obligatorio")]
-    [MaxLength(100, ErrorMessage = "El nombre del Funko no puede superar los 100 caracteres")]
-    [MinLength(1, ErrorMessage = "El nombre del Funko debe tener más de 1 caracteres")]
-    [NoLink]
-    public required string Name { get; set; }
+    public required string Name { get; set; } = string.Empty;
     
-    [Required (ErrorMessage =  "El precio del funko es obligatorio")]
-    [NoLink]
     public required decimal Precio  { get; set; }
     
-    [Required(ErrorMessage = "La categoría es obligatoria")]
-    [EnumDataType(typeof(Categoria), ErrorMessage = "La categoría no es válida")]
-    [NoLink]
-    public required Categoria Categoria { get; set; }
+    public required long CategoriaId { get; set; }
+    public Categoria Categoria { get; set; } = null!;
     
+    public required long ProveedorId { get; set; }
+    public Proveedor Proveedor { get; set; } = null!;
     
-    public DateTime CreateAt {get; init; }
+    public required int Stock { get; set; }
+    
+    public DateTime CreateAt {get; set; }
     public DateTime? UpdateAt {get; set; } 
-    public DateTime? DeleteAt {get; init; }
+    
+    public bool IsDeleted {get; set; }
+    public DateTime? DeleteAt {get; set; }
 }

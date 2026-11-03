@@ -4,7 +4,7 @@ using Funkos.Helper;
 namespace Funkos.Test.Helper;
 
 [TestFixture]
-public class FunkoLinkHelperTest
+public class LinkHelperTest
 {
 
 
@@ -17,7 +17,7 @@ public class FunkoLinkHelperTest
         // se inicializan aquí (o se mockean si hace falta).
 
         // Act
-        var resultado = FunkoLinkHelper.GenerateLinks(funkoId, "/api/funkos"); // (o como se llame tu método)
+        var resultado = LinkHelper.GenerateLinks(funkoId, "/api/funkos"); // (o como se llame tu método)
 
         // Assert
         resultado.Should().NotBeNullOrWhiteSpace();
@@ -33,7 +33,7 @@ public class FunkoLinkHelperTest
         // se inicializan aquí (o se mockean si hace falta).
 
         // Act
-        var resultado = FunkoLinkHelper.GenerateUpdateLinks(funkoId, "/api/funkos"); // (o como se llame tu método)
+        var resultado = LinkHelper.GenerateUpdateLinks(funkoId, "/api/funkos"); // (o como se llame tu método)
 
         // Assert
         resultado.Should().NotBeNullOrWhiteSpace();
@@ -49,7 +49,7 @@ public class FunkoLinkHelperTest
         // se inicializan aquí (o se mockean si hace falta).
 
         // Act
-        var resultado = FunkoLinkHelper.GenerateDeleteLinks(funkoId, "/api/funkos"); // (o como se llame tu método)
+        var resultado = LinkHelper.GenerateDeleteLinks(funkoId, "/api/funkos"); // (o como se llame tu método)
 
         // Assert
         resultado.Should().NotBeNullOrWhiteSpace();

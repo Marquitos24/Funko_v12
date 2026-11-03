@@ -1,4 +1,5 @@
 ﻿using Funkos.Dto;
+using Funkos.Dto.Funko;
 using Funkos.Models;
 
 namespace Funkos.Mappers;
@@ -9,7 +10,9 @@ public static class FunkoMapper
     {
         Name = request.Name,
         Precio = request.Precio,
-        Categoria = request.Categoria
+        CategoriaId = request.CategoriaId,
+        ProveedorId = request.ProveedorId,
+        Stock =  request.Stock
     };
     
     public static Funko ToEntityUpdate(this FunkoUpdateDto request) => new Funko
@@ -17,18 +20,40 @@ public static class FunkoMapper
         Id = request.Id,
         Name = request.Name,
         Precio = request.Precio,
-        Categoria = request.Categoria
+        CategoriaId = request.CategoriaId,
+        ProveedorId = request.ProveedorId,
+        Stock =  request.Stock
     };
 
 
     public static FunkosDtoResponse ToDtoResponse(this Funko funko) => new FunkosDtoResponse(
-
         funko.Id,
         funko.Name,
         funko.Precio,
-        funko.Categoria,
+        funko.CategoriaId,
+        funko.ProveedorId,
+        funko.Stock,
         funko.CreateAt,
         funko.UpdateAt,
         funko.DeleteAt
+    );
+    
+    public static FunkosConCategoriaDtoResponse ToListDtoResponse(this Funko funko) => new FunkosConCategoriaDtoResponse(
+        funko.Id,
+        funko.Name,
+        funko.Precio,
+        funko.CategoriaId,
+        funko.Categoria.Name,
+        funko.ProveedorId,
+        funko.Stock,
+        funko.CreateAt,
+        funko.UpdateAt,
+        funko.DeleteAt
+    );
+    
+    public static FunkoParaCategoriaDto ToDtoParaCategoria(this Funko funko) => new FunkoParaCategoriaDto(
+        funko.Id,
+        funko.Name,
+        funko.Precio
     );
 }

@@ -1,9 +1,15 @@
 ﻿namespace Funkos.Models;
 
-public enum Categoria
+public record Categoria
 {
-    StarWars,
-    Marvel,
-    Dc,
-    Anime,
+    public long Id { get; init; }
+
+    public required string Name { get; set; } = string.Empty;
+    
+    public required string Descripcion  { get; set; } = string.Empty;
+    
+    public ICollection<Funko> Funkos { get; set; } = [];
+    
+    public DateTime CreateAt {get; set; }
+    public DateTime? UpdateAt {get; set; } 
 }

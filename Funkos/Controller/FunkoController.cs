@@ -1,11 +1,12 @@
 ﻿using Funkos.Models;
 using Funkos.Repositories;
-using Funkos.Dto;
+using Funkos.Dto.Funko;
 using Funkos.Mappers;
 using Funkos.Service;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using CSharpFunctionalExtensions;
+using Funkos.Dto;
 using Funkos.Errors;
 using Funkos.Helper;
 
@@ -16,11 +17,11 @@ namespace Funkos.Controller;
 public class FunkoController(IFunkoService service) : ControllerBase
 {
     [HttpGet]
-    public ActionResult<List<FunkosDtoResponse>> GetAll([FromQuery] string? categoria,
+    public async Task<ActionResult<List<FunkosDtoResponse>>> GetAllAsync([FromQuery] string? categoria,
         [FromQuery] decimal? precioMin,
-        [FromQuery] decimal? precioMax)
+        [FromQuery] decimal? precioMax, CancellationToken cancellationToken)
     {
-       var resultado = service.GetAll(categoria, precioMin, precioMax);
+       var resultado = await service.GetAllAsync(categoria, precioMin, precioMax, cancellationToken);
        if (resultado.Value.Count <= 0) { return Ok("Aún no hay Funkos"); }
        return resultado.IsSuccess 
            ? Ok(resultado.Value)
@@ -28,11 +29,11 @@ public class FunkoController(IFunkoService service) : ControllerBase
     }
     
     [HttpGet("{id:long}")]
-    public ActionResult<FunkosDtoResponse> GetById([FromRoute] long id)
+    public async Task<ActionResult<FunkosDtoResponse>> GetByIdAync([FromRoute] long id, CancellationToken cancellationToken)
     {
-        var resultado = service.GetById(id);
+        var resultado = await service.GetByIdAsync(id, cancellationToken);
                 
-        var actionLinks = FunkoLinkHelper.GenerateLinks(id,"/api/funkos");
+        var actionLinks = LinkHelper.GenerateLinks(id,"/api/funkos");
         Response.Headers.Append("Link", actionLinks);
         
         return resultado.IsSuccess 
@@ -41,25 +42,25 @@ public class FunkoController(IFunkoService service) : ControllerBase
     }
     
     [HttpPost]
-    public ActionResult<FunkosDtoResponse> Create([FromBody] FunkoCreateDto dto)
+    public async Task<ActionResult<FunkosDtoResponse>> CreateAsync([FromBody] FunkoCreateDto dto, CancellationToken cancellationToken)
     {
-        var resultado = service.Add(dto);
+        var resultado = await service.AddAsync(dto, cancellationToken);
         if (resultado.IsFailure) { return resultado.Error.ToHttpResult<FunkosDtoResponse>(); }
         //HETOAS
-        var actionLinks = FunkoLinkHelper.GenerateLinks(resultado.Value.Id,"/api/funkos");
+        var actionLinks = LinkHelper.GenerateLinks(resultado.Value.Id,"/api/funkos");
         Response.Headers.Append("Link", actionLinks);
         
             return resultado.IsSuccess 
-                ? CreatedAtAction(nameof(GetById), new { id = resultado.Value.Id}, resultado.Value)
+                ? CreatedAtAction(nameof(GetByIdAync), new { id = resultado.Value.Id}, resultado.Value)
                 : resultado.Error.ToHttpResult<FunkosDtoResponse>();
     }
     
     [HttpPut("{id:long}")]
-    public ActionResult<FunkosDtoResponse> Update([FromRoute] long id, [FromBody] FunkoUpdateDto dto)
+    public async Task<ActionResult<FunkosDtoResponse>> UpdateAsync([FromRoute] long id, [FromBody] FunkoUpdateDto dto, CancellationToken cancellationToken)
     {
-        var actualizado = service.Update(id, dto);
+        var actualizado = await service.UpdateAsync(id, dto, cancellationToken);
         //HETOAS
-        var actionLinks = FunkoLinkHelper.GenerateUpdateLinks(id,"/api/funkos");
+        var actionLinks = LinkHelper.GenerateUpdateLinks(id,"/api/funkos");
         Response.Headers.Append("Link", actionLinks);
         return actualizado.IsSuccess 
             ? Ok(actualizado.Value)
@@ -68,11 +69,11 @@ public class FunkoController(IFunkoService service) : ControllerBase
     }
     
     [HttpDelete("{id:long}")]
-    public ActionResult<bool> Delete([FromRoute] long id)
+    public async Task<ActionResult<bool>> DeleteAsync([FromRoute] long id, CancellationToken cancellationToken)
     {
-            var deleted = service.Delete(id);
+            var deleted = await service.DeleteAsync(id, cancellationToken);
             //HETOAS de Delete
-            var actionLinks = FunkoLinkHelper.GenerateDeleteLinks(id,"/api/funkos");
+            var actionLinks = LinkHelper.GenerateDeleteLinks(id,"/api/funkos");
             Response.Headers.Append("Link", actionLinks);
             if (deleted.IsFailure) { return deleted.Error.ToHttpResult<bool>(); }
             return NoContent();

@@ -1,7 +1,10 @@
 using System.Text.Json.Serialization;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Funkos.DbContext;
 using Funkos.Infrastructure;
+using Funkos.Validations;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +17,10 @@ builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddProblemDetails();
 // Registrar los validators --> NO ejecuta la validación por sí solo
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+// PostgreSQL (proveedor del curso)
+builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
 
 // Negociación de codigo
 // JSON
@@ -38,7 +45,10 @@ builder.Services.AddControllers()
 */
 // Ejecución automática vía action filter --> Paquete FluentValidation .AspNetCore
 // Requiere llamarse DESPUÉS de AddControllers() = Solo funciona en MVC/controllers
-builder.Services.AddFluentValidationAutoValidation();
+//builder.Services.AddFluentValidationAutoValidation();
+
+builder.Services.AddValidatorsFromAssemblyContaining<ProveedorUpdateValidation>();
+
 
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
@@ -46,10 +56,10 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog(); // <- Aquí conectas Serilog con el sistema de ILogger de .NET y lo Sustitulles
 
-
 var app = builder.Build();
 
 app.UseExceptionHandler();
 app.MapControllers();
 app.Run();
+
 

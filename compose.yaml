@@ -12,6 +12,23 @@
       redis:
         condition: service_healthy
     restart: unless-stopped
+    
+  posgresql:
+    image: postgres:16
+    ports:
+      - "5432:5432"
+    container_name: postgres_funkos
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: FunkosDb
+    volumes:
+          - postgre-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD", "pg_isready -U admin -d FunkosDb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   redis:
     image: redis:7-alpine
@@ -27,3 +44,4 @@
 
 volumes:
   redis-data:
+  postgre-data:
