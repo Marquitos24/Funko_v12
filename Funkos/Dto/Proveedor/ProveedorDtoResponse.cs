@@ -1,9 +1,10 @@
 ﻿using Funkos.Models;
+using MongoDB.Bson;
 
 namespace Funkos.Dto.Proveedor;
 
 public record ProveedorDtoResponse(
-    long Id,
+    string Id,
     string Name,
     string Descripcion,
     DateTime CreateAt,

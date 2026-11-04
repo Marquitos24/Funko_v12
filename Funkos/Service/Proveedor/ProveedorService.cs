@@ -3,31 +3,34 @@ using FluentValidation;
 using Funkos.Dto.Proveedor;
 using Funkos.Errors;
 using Funkos.Mappers;
+using Funkos.Repositories;
 using Proveedorr = Funkos.Models.Proveedor;
 using Funkos.Repositories.Proveedor;
+using MongoDB.Bson;
 
 namespace Funkos.Service.Proveedor;
 
-public class ProveedorService(IProveedorRepository repository, IValidator<ProveedorCreateDto> validatorCreateAsync, IValidator<ProveedorUpdateDto> validatorUpdateAsync, ILogger<ProveedorService> logger ) : IProveedorService
+public class ProveedorService(IProveedorRepository repository, IFunkoRepository funkoRepository, IValidator<ProveedorCreateDto> validatorCreateAsync, IValidator<ProveedorUpdateDto> validatorUpdateAsync, ILogger<ProveedorService> logger ) : IProveedorService
 {
-    public async Task<Result<List<ProveedorDtoResponse>, DomainErrors>>  GetAllAsync(CancellationToken cancellationToken)
+    public async Task<Result<IEnumerable<ProveedorDtoResponse>, DomainErrors>>  GetAllAsync(CancellationToken cancellationToken)
     {
-        List<Proveedorr> proveedores = await repository.FindAllAsync(cancellationToken);
+        IEnumerable<Proveedorr> proveedores = await repository.FindAllAsync(cancellationToken);
        logger.LogInformation("Listar Proveedores");
         List<ProveedorDtoResponse> proveedorResponse = proveedores.Select(f => ProveedorMapper.ToDtoResponse(f)).ToList();
-        return Result.Success<List<ProveedorDtoResponse>, DomainErrors>(proveedorResponse);
+        return Result.Success<IEnumerable<ProveedorDtoResponse>, DomainErrors>(proveedorResponse);
     }
     
-    public async Task<Result<ProveedorConFunkosDtoResponse, DomainErrors>> GetByIdAsync(long id, CancellationToken cancellationToken)
+    public async Task<Result<ProveedorDtoResponse, DomainErrors>> GetByIdAsync(ObjectId id, CancellationToken cancellationToken)
     {
         logger.LogInformation("Buscando Proveedor {Id}", id);
-        if (id <= 0) return Result.Failure<ProveedorConFunkosDtoResponse, DomainErrors>(ProveedorError.NotFound(id));
+        if (id == ObjectId.Empty) return Result.Failure<ProveedorDtoResponse, DomainErrors>(ProveedorError.NotFound(id));
+        
         Proveedorr? proveedor = await repository.FindByIdAsync(id, cancellationToken); 
         logger.LogWarning("Proveedor {Id} NO encontrado ", id);
-        if(proveedor == null) {logger.LogWarning("Proveedor {Id} NO encontrado ", id); return Result.Failure<ProveedorConFunkosDtoResponse, DomainErrors>(ProveedorError.NotFound()); }
+        if(proveedor == null) {logger.LogWarning("Proveedor {Id} NO encontrado ", id); return Result.Failure<ProveedorDtoResponse, DomainErrors>(ProveedorError.NotFound()); }
        
-        ProveedorConFunkosDtoResponse proveedorResponse =  ProveedorMapper.ToDtoResponseWithFunkos(proveedor);
-        return Result.Success<ProveedorConFunkosDtoResponse, DomainErrors>(proveedorResponse);
+        ProveedorDtoResponse proveedorResponse =  ProveedorMapper.ToDtoResponse(proveedor);
+        return Result.Success<ProveedorDtoResponse, DomainErrors>(proveedorResponse);
     }
     
     public async Task<Result<ProveedorDtoResponse, DomainErrors>> AddAsync(ProveedorCreateDto newProv, CancellationToken cancellationToken)
@@ -62,8 +65,26 @@ public class ProveedorService(IProveedorRepository repository, IValidator<Provee
         return Result.Success<ProveedorDtoResponse, DomainErrors>(provResponse);
     }
     
-    public async Task<Result<ProveedorDtoResponse, DomainErrors>> UpdateAsync(long id, ProveedorUpdateDto updatedProveedor, CancellationToken cancellationToken)
+    public async Task<Result<ProveedorDtoResponse, DomainErrors>> UpdateAsync(ObjectId id, ProveedorUpdateDto updatedProveedor, CancellationToken cancellationToken)
     {
+        //Buscamos el Proveedor por Id y comprobamos si existe, si no salta error
+        if (id == ObjectId.Empty)
+        {
+            logger.LogWarning("El identificador del proveedor está vacío");
+            return Result.Failure<ProveedorDtoResponse, DomainErrors>(
+                ProveedorError.NotFound(id));
+        }
+        
+        // Comprobar que el proveedor existe
+        var proveedor = await repository.FindByIdAsync(id, cancellationToken);
+        if (proveedor is null)
+        {
+            logger.LogWarning("No se encontró el proveedor {id}", id);
+            return Result.Failure<ProveedorDtoResponse, DomainErrors>(
+                ProveedorError.NotFound(id));
+        }
+
+        
         // Si la validación falla, ModelState.IsValid será false automáticamente
         var context = new ValidationContext<ProveedorUpdateDto>(updatedProveedor);
         context.RootContextData["ProvId"] = id;
@@ -76,16 +97,9 @@ public class ProveedorService(IProveedorRepository repository, IValidator<Provee
             return Result.Failure<ProveedorDtoResponse, DomainErrors>(ProveedorError.BadRequest(errorsDescription));
         }
         
-        //Buscamos el Proveedor por Id y comprobamos si existe, si no salta error
-        var proveedorId = await repository.FindByIdAsync(id,cancellationToken );
-        if (id <= 0 || proveedorId is null)
-        {
-            logger.LogWarning("No se encontro el Proveedor {id}", id);
-            return Result.Failure<ProveedorDtoResponse, DomainErrors>(ProveedorError.NotFound(id)); 
-        }
-        
         //Convertimos el RequestDTO al Modelo y validamos, si es null salta error
         var proveedorModel = ProveedorMapper.ToEntityUpdate(updatedProveedor);
+        proveedorModel.Id = id;
         if (proveedorModel is null) {logger.LogWarning("No guardo el Proveedor {id}", id);  return Result.Failure<ProveedorDtoResponse, DomainErrors>(ProveedorError.NotFound());} 
         
         //Actualizamos Proveedor y comprobamos que no sea null, si lo es salta error
@@ -99,17 +113,18 @@ public class ProveedorService(IProveedorRepository repository, IValidator<Provee
         return Result.Success<ProveedorDtoResponse, DomainErrors>(provResponse);
     }
 
-    public async Task<Result<bool, DomainErrors>> DeleteAsync(long id, CancellationToken cancellationToken)
+    public async Task<Result<bool, DomainErrors>> DeleteAsync(ObjectId id, CancellationToken cancellationToken)
     {
         //Comprobamos que el Id existe, si no salta error
         var proveedorId = await repository.FindByIdAsync(id, cancellationToken);
-        if (id <= 0 || proveedorId is null) return Result.Failure<bool, DomainErrors>(ProveedorError.NotFound(id));
+        if (id == ObjectId.Empty || proveedorId is null) return Result.Failure<bool, DomainErrors>(ProveedorError.NotFound(id));
         
         //Que no haya funkos asociados al proveedor
-        if(proveedorId.Funkos.Any())
+        var cantidad = await funkoRepository.ExistsFunkosPAsync(id.ToString(), cancellationToken);
+        if(cantidad > 0)
         { 
-            logger.LogInformation("Proveedor {id} tiene funkos asociados", id); 
-            return Result.Failure<bool, DomainErrors>(ProveedorError.BusinessRule(proveedorId.Funkos.Count()));
+            logger.LogInformation("Proveedor {id} tiene {cantidad} funkos asociados", id, cantidad); 
+            return Result.Failure<bool, DomainErrors>(ProveedorError.BusinessRule(cantidad));
         }
         
         var deleted = await repository.DeleteAsync(id, cancellationToken);

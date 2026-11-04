@@ -23,10 +23,8 @@ public class CategoriaService(ICategoriaRepository repository, IValidator<Catego
         logger.LogInformation("Buscando Categoria {Id}", id);
         if (id <= 0) return Result.Failure<CategoriaWithFunkosResponseDto, DomainErrors>(CategoriaError.NotFound(id));
         Categoriaa? cat = await repository.FindByIdAsync(id, cancellationToken); 
-        logger.LogWarning("Categoria {Id} NO encontradao ", id);
-        if(cat == null) return Result.Failure<CategoriaWithFunkosResponseDto, DomainErrors>(CategoriaError.NotFound()); 
-        logger.LogWarning("Categooria {Id} NO encontrada ", id);
-       
+        if(cat == null) {logger.LogWarning("Categooria {Id} NO encontrada ", id); return Result.Failure<CategoriaWithFunkosResponseDto, DomainErrors>(CategoriaError.NotFound());} 
+        
         CategoriaWithFunkosResponseDto catResponse =  CategoriaMapper.ToDtoResponseWithFunkos(cat);
         return Result.Success<CategoriaWithFunkosResponseDto, DomainErrors>(catResponse);
     }

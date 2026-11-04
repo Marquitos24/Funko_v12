@@ -41,8 +41,6 @@ public class UpdateFunkoValidation: AbstractValidator<FunkoUpdateDto>
             .WithMessage("La categoría no existe");
 
         RuleFor(x => x.ProveedorId)
-            .GreaterThan(0)
-            .WithMessage("Debes seleccionar un proveedor válido")
             .MustAsync(async (id, cancellation) =>
                 await proveedorRepository.ExistsAsync(id, cancellation))
             .WithMessage("El proveedor no existe");

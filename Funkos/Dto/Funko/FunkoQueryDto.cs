@@ -2,7 +2,7 @@
 using Funkos.Models;
 using Funkos.Validations;
 
-namespace Funkos.Dto;
+namespace Funkos.Dto.Funko;
 
 public class FunkoQueryDto
 {

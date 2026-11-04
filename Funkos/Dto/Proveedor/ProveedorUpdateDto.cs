@@ -1,12 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Funkos.Models;
 using Funkos.Validations;
+using MongoDB.Bson;
 
 namespace Funkos.Dto.Proveedor;
 
 public record ProveedorUpdateDto
 {
-    public long Id { get; set; }
+    [RegularExpression(@"^[a-fA-F0-0]{24}$", ErrorMessage =  "Formato invalido de ID")]
+    public ObjectId Id { get; set; }
     
     [Required (ErrorMessage =  "El nombre de la categoria es obligatoria")]
     [StringLength(200, MinimumLength = 1, ErrorMessage = "El nombre del proveedor no puede superar los 200 caracteres y debe ser superior a 1")]

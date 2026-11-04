@@ -82,8 +82,10 @@ namespace Funkos.Migrations
                     b.Property<decimal>("Precio")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<long>("ProveedorId")
-                        .HasColumnType("bigint");
+                    b.Property<string>("ProveedorId")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("character varying(24)");
 
                     b.Property<int>("Stock")
                         .ValueGeneratedOnAdd()
@@ -100,56 +102,14 @@ namespace Funkos.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.HasIndex("ProveedorId");
-
                     b.ToTable("Funkos", null, t =>
                         {
                             t.HasCheckConstraint("CK_Funko_CategoriaId", "\"CategoriaId\" >= 1");
 
                             t.HasCheckConstraint("CK_Funko_Precio", "\"Precio\" >= 1.00");
 
-                            t.HasCheckConstraint("CK_Funko_ProveedorId", "\"ProveedorId\" >= 1");
-
                             t.HasCheckConstraint("CK_Funko_Stock", "\"Stock\" >= 0");
                         });
-                });
-
-            modelBuilder.Entity("Funkos.Models.Proveedor", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<DateTime>("CreateAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("DeleteAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Descripcion")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("character varying(300)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.Property<DateTime?>("UpdateAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("Proveedor", (string)null);
                 });
 
             modelBuilder.Entity("Funkos.Models.Funko", b =>
@@ -160,23 +120,10 @@ namespace Funkos.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Funkos.Models.Proveedor", "Proveedor")
-                        .WithMany("Funkos")
-                        .HasForeignKey("ProveedorId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.Navigation("Categoria");
-
-                    b.Navigation("Proveedor");
                 });
 
             modelBuilder.Entity("Funkos.Models.Categoria", b =>
-                {
-                    b.Navigation("Funkos");
-                });
-
-            modelBuilder.Entity("Funkos.Models.Proveedor", b =>
                 {
                     b.Navigation("Funkos");
                 });

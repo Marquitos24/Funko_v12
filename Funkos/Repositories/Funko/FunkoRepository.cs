@@ -88,9 +88,9 @@ public class FunkoRepository(AppDbContext db) : IFunkoRepository
         return await db.Funkos.AnyAsync(f => f.CategoriaId == id, cancellationToken);
     }
     
-    public async Task<bool> ExistsFunkosPAsync(long id, CancellationToken cancellationToken = default)
+    public async Task<int> ExistsFunkosPAsync(string proveedorId, CancellationToken cancellationToken = default)
     {
-        return await db.Funkos.AnyAsync(f => f.ProveedorId == id, cancellationToken);
+        return await db.Funkos.CountAsync(f => f.ProveedorId == proveedorId && !f.IsDeleted, cancellationToken);
     }
     #endregion
     

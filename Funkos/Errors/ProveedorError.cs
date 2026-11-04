@@ -1,8 +1,10 @@
-﻿namespace Funkos.Errors;
+﻿using MongoDB.Bson;
+
+namespace Funkos.Errors;
 
 public class ProveedorError
 {
-    public static NotFoundError NotFound(long id) => NotFoundError.FromId(id, "Proveedor");
+    public static NotFoundError NotFound(ObjectId id) => NotFoundError.FromId(id, "Proveedor");
     public static NotFoundError NotFound() => NotFoundError.ListaVacia("Proveedor");
     public static NotFoundError NotFound(string nombre) => NotFoundError.Delete(nombre, "Proveedor");
     public static ValidationError BadRequest(string message) => ValidationError.Create(message);

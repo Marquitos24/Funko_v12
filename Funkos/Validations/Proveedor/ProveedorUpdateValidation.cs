@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Funkos.Dto.Proveedor;
 using Funkos.Repositories.Proveedor;
+using MongoDB.Bson;
 
 namespace Funkos.Validations;
 
@@ -17,7 +18,7 @@ public class ProveedorUpdateValidation
                 .WithMessage("El nombre no puede superar los 200 caracteres")
                 .MustAsync(async (dto, name, context, cancellationToken) =>
                     {
-                        var id = (long)context.RootContextData["ProvId"];
+                        var id = (ObjectId)context.RootContextData["ProvId"];
                        return !await repo.ExistsByNameAsync(name, id, cancellationToken);
                     })
                 .WithMessage("Ya existe un proveedor con ese nombre");

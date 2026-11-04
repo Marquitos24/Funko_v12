@@ -12,6 +12,6 @@ public interface IFunkoRepository
 
     Task<bool> ExistsByNameAsync(string name, long? id = null, CancellationToken can = default);
     Task<bool> ExistsFunkosCAsync(long id, CancellationToken cancellationToken = default);
-    Task<bool> ExistsFunkosPAsync(long id, CancellationToken cancellationToken = default);
+    Task<int> ExistsFunkosPAsync(string proveedorId, CancellationToken cancellationToken = default);
 
 }   

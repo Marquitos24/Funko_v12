@@ -29,11 +29,29 @@
       interval: 10s
       timeout: 5s
       retries: 5
+  
+  mongo:
+    image: mongo:8
+    ports:
+      - "27017:27017"
+    container_name: mongo-proveedores
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin123
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 
   redis:
     image: redis:7-alpine
     ports:
       - "6379:6379"
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
     volumes:
       - redis-data:/data
     healthcheck:
@@ -43,5 +61,8 @@
       retries: 5
 
 volumes:
+  mongo-data:
   redis-data:
   postgre-data:
+    
+ #https://hub.docker.com/   

@@ -1,6 +1,5 @@
 using System.Text.Json.Serialization;
 using FluentValidation;
-using FluentValidation.AspNetCore;
 using Funkos.DbContext;
 using Funkos.Infrastructure;
 using Funkos.Validations;
@@ -21,6 +20,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 // PostgreSQL (proveedor del curso)
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
+
 
 // Negociación de codigo
 // JSON

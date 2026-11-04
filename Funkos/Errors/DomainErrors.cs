@@ -1,4 +1,6 @@
-﻿namespace Funkos.Errors;
+﻿using MongoDB.Bson;
+
+namespace Funkos.Errors;
 
 public abstract record DomainErrors(string Message)
 {
@@ -9,6 +11,9 @@ public abstract record DomainErrors(string Message)
 public sealed record NotFoundError(string Message) : DomainErrors(Message)
 {
     public static NotFoundError FromId(long id, string resourceType = "Recurso") => new($"{resourceType} con ID {id} no encontrado");
+    
+    //Metodo Para MONGO y su id
+    public static NotFoundError FromId(ObjectId id, string resourceType = "Recurso") => new($"{resourceType} con ID {id.ToString()} no encontrado");
     
     public static NotFoundError ListaVacia(string resourceType = "Recurso") => new($"No se han encontrado {resourceType}");
     

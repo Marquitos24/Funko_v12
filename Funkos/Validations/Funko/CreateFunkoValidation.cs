@@ -42,8 +42,6 @@ public class CreateFunkoValidationAsync : AbstractValidator<FunkoCreateDto>
         RuleFor(x => x.ProveedorId)
             .MustAsync(async (id, cancellation) =>
                 await proveedorRepository.ExistsAsync(id, cancellation))
-            .WithMessage("El proveedor no existe")
-            .GreaterThan(0)
-            .WithMessage("Debes seleccionar un proveedor válido");
+            .WithMessage("El proveedor no existe");
     }
 }

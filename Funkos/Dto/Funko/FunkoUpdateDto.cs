@@ -21,8 +21,8 @@ public record FunkoUpdateDto
     [Range(1, long.MaxValue, ErrorMessage = "Inserte un id mayor que 0")]
     public required long CategoriaId { get; set; }
     
-    [Range(1, long.MaxValue, ErrorMessage = "El ID del proveedor debe ser mayor que 0.")]
-    public required long ProveedorId { get; set; }
+    [RegularExpression(@"^[a-fA-F0-0]{24}$", ErrorMessage =  "Formato invalido de ID")]
+    public required string ProveedorId { get; set; }
     
     [Range(1, int.MaxValue, ErrorMessage = "Inserte un stock mayor que 0")]
     public required int Stock { get; set; }

@@ -1,72 +1,85 @@
 ﻿using Funkos.DbContext;
+using Funkos.Mongo;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson;
+using MongoDB.Driver;
 using ProveedorModel = Funkos.Models.Proveedor;
 
 namespace Funkos.Repositories.Proveedor;
 
-public class ProveedorRepository(AppDbContext db) : IProveedorRepository
+public class ProveedorRepository(MongoDbContext context) : IProveedorRepository
 {
-    public async Task<List<ProveedorModel>>  FindAllAsync(CancellationToken cancellationToken = default)
+    private readonly IMongoCollection<ProveedorModel> _collection =  context.Proveedores;
+    
+    public async Task<IEnumerable<ProveedorModel>>  FindAllAsync(CancellationToken cancellationToken = default)
     {
-        var proveedores = await db.Proveedores.AsNoTracking().ToListAsync(cancellationToken);
-        return proveedores;
+        return await _collection.Find(FiltroActivos).ToListAsync(cancellationToken);
     }
 
-    public async Task<ProveedorModel?> FindByIdAsync(long id, CancellationToken cancellationToken = default)
+    public async Task<ProveedorModel?> FindByIdAsync(ObjectId id, CancellationToken cancellationToken = default)
     {
-        return await db.Proveedores.Include(p => p.Funkos).AsNoTracking().FirstOrDefaultAsync(f => f.Id == id, cancellationToken);
+        //Eq = Equals                                                                                       & = porque NO combinamos 2 valores, si no que unimos condiciones
+        var filtro = Builders<ProveedorModel>.Filter.Eq(p => p.Id, id) & FiltroActivos;
+
+        return await _collection.Find(filtro).FirstOrDefaultAsync(cancellationToken);
     }
 
     public async Task<ProveedorModel> CreateAsync(ProveedorModel newProv, CancellationToken cancellationToken = default)
-    {
-        var prov = new ProveedorModel
-        {
-            Name = newProv.Name,
-            Descripcion = newProv.Descripcion,
-            CreateAt = DateTime.UtcNow
-        };
-        await db.Proveedores.AddAsync(prov);
-        await db.SaveChangesAsync(cancellationToken);
-        return prov;
+    { 
+        newProv.CreateAt = DateTime.UtcNow;
+        await _collection.InsertOneAsync(newProv,  cancellationToken: cancellationToken);
+       // NO es necesario un SaveChangesAsync()
+       return newProv;
     }
 
-    public async Task<ProveedorModel?> UpdateAsync(long id, ProveedorModel updatedProv, CancellationToken cancellationToken = default)
+    public async Task<ProveedorModel?> UpdateAsync(ObjectId id, ProveedorModel updatedProv, CancellationToken cancellationToken = default)
     {
-        var prov = await db.Proveedores.FirstOrDefaultAsync(f => f.Id == id,  cancellationToken);
-
-        if (prov is null) return null;
-        
-        prov.Name = updatedProv.Name;
-        prov.Descripcion = updatedProv.Descripcion;
-        prov.UpdateAt = DateTime.UtcNow;
-        
-        await db.SaveChangesAsync(cancellationToken);
-        return prov;
+        updatedProv.UpdateAt= DateTime.UtcNow;
+        var filtro = Builders<ProveedorModel>.Filter.Eq(p => p.Id, id) & FiltroActivos;
+        var result = await _collection.ReplaceOneAsync(filtro, updatedProv,  cancellationToken: cancellationToken);
+        return result.IsAcknowledged ? updatedProv : null;
+        // IsAcknowledged = Indica si se ha confirmado que ha recibido y reconocido la operación de escritura.
     }
+    
+    public async Task<bool> DeleteAsync(ObjectId id, CancellationToken cancellationToken = default)
+    {
+        var update = Builders<ProveedorModel>.Update
+            .Set(p => p.IsDeleted, true)
+            .Set(p => p.DeleteAt, DateTime.UtcNow);
+        //set = Asignar un valor a un campo del documento
+        
+        var filtro = Builders<ProveedorModel>.Filter.Eq(p => p.Id, id) & FiltroActivos;
+        
+        var result = await _collection.UpdateOneAsync(filtro, update, cancellationToken: cancellationToken);
+        return result.IsAcknowledged && result.ModifiedCount > 0;
+                                            // ModifiedCount = Indica cuántos documentos han sido modificados en la operación.
+    }
+    
 /// <summary>
 /// 
 /// </summary>
 /// <param name="id"></param>
 /// <param name="cancellationToken"></param>
 /// <returns></returns>
-    public async Task<bool> ExistsAsync(long id, CancellationToken cancellationToken = default)
+    public async Task<bool> ExistsAsync(string id, CancellationToken cancellationToken = default)
     {
-        return await db.Proveedores.AnyAsync(f => f.Id == id, cancellationToken);
+        if (!ObjectId.TryParse(id, out var idMongo)) return false;
+        var filtro = Builders<ProveedorModel>.Filter.Eq(p => p.Id, idMongo) & FiltroActivos;
+        return await _collection.Find(filtro).AnyAsync(cancellationToken);
     }
     
-    public async Task<bool> ExistsByNameAsync(string name, long? id = null, CancellationToken cancellationToken = default)
+    public async Task<bool> ExistsByNameAsync(string name, ObjectId? id = null, CancellationToken cancellationToken = default)
     {
-        return await db.Proveedores.AnyAsync(f => f.Name == name && !f.IsDeleted && (id == null || f.Id != id) , cancellationToken);
-    }
-    
-    public async Task<bool> DeleteAsync(long id, CancellationToken cancellationToken = default)
-    {
-        var prov = await db.Proveedores.FirstOrDefaultAsync(f => f.Id == id, cancellationToken);
-        if (prov is null) return false;
+        var filtro = Builders<ProveedorModel>.Filter.Eq(p => p.Name, name) & FiltroActivos;
 
-        prov.IsDeleted = true;
-        prov.DeleteAt = DateTime.UtcNow;
-        await db.SaveChangesAsync(cancellationToken);
-        return true;
+        //.Ne == distinto   &= ==> operador compuesto (filtro = filtro & otroFiltro;)
+        if (id.HasValue)  filtro &= Builders<ProveedorModel>.Filter.Ne(p => p.Id, id.Value);
+
+        return await _collection.Find(filtro).AnyAsync(cancellationToken);
     }
+    
+    
+    
+    private static FilterDefinition<ProveedorModel> FiltroActivos =>
+        Builders<ProveedorModel>.Filter.Eq(p => p.IsDeleted, false);
 }

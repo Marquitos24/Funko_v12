@@ -23,16 +23,14 @@ public class FunkoConfiguration : IEntityTypeConfiguration<Funko>
             t.HasCheckConstraint("CK_Funko_Precio", "\"Precio\" >= 1.00");
             t.HasCheckConstraint("CK_Funko_Stock", "\"Stock\" >= 0");
             t.HasCheckConstraint("CK_Funko_CategoriaId", "\"CategoriaId\" >= 1");
-            t.HasCheckConstraint("CK_Funko_ProveedorId", "\"ProveedorId\" >= 1");
         });
         
         builder.HasOne(p => p.Categoria)
             .WithMany(c => c.Funkos)
             .HasForeignKey(p => p.CategoriaId);
         
-        builder.HasOne(p => p.Proveedor)
-            .WithMany(c => c.Funkos)
-            .HasForeignKey(p => p.ProveedorId);
+        builder.Property(p => p.ProveedorId)
+            .HasMaxLength(24).IsRequired();
         
         // Para no borrar los datos de un usurio en laBD ponemos un filtro para que si se elimina
         // los descarte de las otras consultas (en un filtro)

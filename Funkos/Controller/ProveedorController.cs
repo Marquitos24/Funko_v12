@@ -3,6 +3,7 @@ using Funkos.Errors;
 using Funkos.Helper;
 using Funkos.Service.Proveedor;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 
 namespace Funkos.Controller;
 
@@ -11,26 +12,30 @@ namespace Funkos.Controller;
 public class ProveedorController(IProveedorService service) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<List<ProveedorDtoResponse>>> GetAllAsync(CancellationToken cancellationToken)
+    public async Task<ActionResult<IEnumerable<ProveedorDtoResponse>>> GetAllAsync(CancellationToken cancellationToken)
     {
        var resultado = await service.GetAllAsync(cancellationToken);
-       if (resultado.Value.Count <= 0) { return Ok("Aún no hay Proveedores"); }
+       if (resultado.IsSuccess && !resultado.Value.Any()) return Ok("Aún no hay Proveedores");
+       
        return resultado.IsSuccess 
            ? Ok(resultado.Value)
-           : resultado.Error.ToHttpResult<List<ProveedorDtoResponse>>();
+           : resultado.Error.ToHttpResult<IEnumerable<ProveedorDtoResponse>>();
     }
     
-    [HttpGet("{id:long}")]
-    public async Task<ActionResult<ProveedorConFunkosDtoResponse>> GetByIdAync([FromRoute] long id, CancellationToken cancellationToken)
+    [HttpGet("{id}")]
+    public async Task<ActionResult<ProveedorDtoResponse>> GetByIdAync(string id, CancellationToken cancellationToken)
     {
-        var resultado = await service.GetByIdAsync(id, cancellationToken);
+        if (!ObjectId.TryParse(id, out var objectId))
+            return BadRequest("El identificador no tiene un formato válido.");
+        
+        var resultado = await service.GetByIdAsync(objectId, cancellationToken);
                 
-        var actionLinks = LinkHelper.GenerateLinks(id,"/api/proveedores");
+        var actionLinks = ProveedorLinkHelper.GenerateLinks(id,"/api/proveedor");
         Response.Headers.Append("Link", actionLinks);
         
         return resultado.IsSuccess 
             ? Ok(resultado.Value)
-            : resultado.Error.ToHttpResult<ProveedorConFunkosDtoResponse>();
+            : resultado.Error.ToHttpResult<ProveedorDtoResponse>();
     }
     
     [HttpPost]
@@ -39,35 +44,42 @@ public class ProveedorController(IProveedorService service) : ControllerBase
         var resultado = await service.AddAsync(dto, cancellationToken);
         if (resultado.IsFailure) { return resultado.Error.ToHttpResult<ProveedorDtoResponse>(); }
         //HETOAS
-        var actionLinks = LinkHelper.GenerateLinks(resultado.Value.Id,"/api/proveedores");
+        var id = resultado.Value.Id.ToString();
+        
+        var actionLinks = ProveedorLinkHelper.GenerateLinks(id,"/api/proveedor");
         Response.Headers.Append("Link", actionLinks);
         
             return resultado.IsSuccess 
-                ? CreatedAtAction(nameof(GetByIdAync), new { id = resultado.Value.Id}, resultado.Value)
+                ? CreatedAtAction(nameof(GetByIdAync), new { id}, resultado.Value)
                 : resultado.Error.ToHttpResult<ProveedorDtoResponse>();
     }
     
-    [HttpPut("{id:long}")]
-    public async Task<ActionResult<ProveedorDtoResponse>> UpdateAsync([FromRoute] long id, [FromBody] ProveedorUpdateDto dto, CancellationToken cancellationToken)
+    [HttpPut("{id}")]
+    public async Task<ActionResult<ProveedorDtoResponse>> UpdateAsync([FromRoute] string id, [FromBody] ProveedorUpdateDto dto, CancellationToken cancellationToken)
     {
-        var actualizado = await service.UpdateAsync(id, dto, cancellationToken);
+        if (!ObjectId.TryParse(id, out var objectId))
+            return BadRequest("El identificador no tiene un formato válido.");
+        
+        var actualizado = await service.UpdateAsync(objectId, dto, cancellationToken);
         //HETOAS
-        var actionLinks = LinkHelper.GenerateUpdateLinks(id,"/api/proveedores");
+        var actionLinks = ProveedorLinkHelper.GenerateUpdateLinks(id,"/api/proveedor");
         Response.Headers.Append("Link", actionLinks);
         return actualizado.IsSuccess 
             ? Ok(actualizado.Value)
             : actualizado.Error.ToHttpResult<ProveedorDtoResponse>();
-        
     }
     
-    [HttpDelete("{id:long}")]
-    public async Task<ActionResult<bool>> DeleteAsync([FromRoute] long id, CancellationToken cancellationToken)
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<bool>> DeleteAsync([FromRoute] string id, CancellationToken cancellationToken)
     {
-            var deleted = await service.DeleteAsync(id, cancellationToken);
-            //HETOAS de Delete
-            var actionLinks = LinkHelper.GenerateDeleteLinks(id,"/api/proveedores");
-            Response.Headers.Append("Link", actionLinks);
-            if (deleted.IsFailure) { return deleted.Error.ToHttpResult<bool>(); }
-            return NoContent();
+        if (!ObjectId.TryParse(id, out var objectId))
+            return BadRequest("El identificador no tiene un formato válido.");
+        
+        var deleted = await service.DeleteAsync(objectId, cancellationToken);
+        //HETOAS de Delete
+        var actionLinks = ProveedorLinkHelper.GenerateDeleteLinks(id,"/api/proveedor");
+        Response.Headers.Append("Link", actionLinks);
+        if (deleted.IsFailure) { return deleted.Error.ToHttpResult<bool>(); }
+        return NoContent();
     }
 }

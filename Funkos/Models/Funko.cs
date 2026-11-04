@@ -11,8 +11,8 @@ public record Funko
     public required long CategoriaId { get; set; }
     public Categoria Categoria { get; set; } = null!;
     
-    public required long ProveedorId { get; set; }
-    public Proveedor Proveedor { get; set; } = null!;
+    //MONGO
+    public required string ProveedorId { get; set; }
     
     public required int Stock { get; set; }
     
