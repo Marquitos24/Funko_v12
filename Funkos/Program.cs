@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using FluentValidation;
+using Funkos.Cache;
 using Funkos.DbContext;
 using Funkos.Infrastructure;
 using Funkos.Validations;
@@ -21,6 +22,12 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 // PostgreSQL (proveedor del curso)
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
 
+//Cache-Redis
+builder.Services.Configure<CacheOptions>(builder.Configuration.GetSection(CacheOptions.SectionName));
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration["Redis:ConnectionString"];
+});
 
 // Negociación de codigo
 // JSON
