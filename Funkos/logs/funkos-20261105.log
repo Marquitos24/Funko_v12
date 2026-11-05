@@ -1,0 +1,71 @@
+2026-11-05 02:40:59.053 +01:00 [INF] Buscando Funko 1
+2026-11-05 02:41:00.578 +01:00 [WRN] Funko 1 NO encontrado 
+2026-11-05 02:41:26.336 +01:00 [INF] Listar Proveedores
+2026-11-05 02:41:49.141 +01:00 [INF] Listar Categorias
+2026-11-05 02:41:53.755 +01:00 [WRN] Categoria NO creada 
+2026-11-05 02:41:53.764 +01:00 [WRN] Ya existe la categoria
+2026-11-05 02:41:53.961 +01:00 [INF] Categoria Creadoacorrectamente
+2026-11-05 02:41:53.963 +01:00 [INF] CACHE HIT: Registro GetAll Invalidado
+2026-11-05 02:42:24.652 +01:00 [INF] Listar Categorias
+2026-11-05 02:42:39.791 +01:00 [INF] Hay errores de validación
+2026-11-05 02:43:15.704 +01:00 [WRN] Categoria NO creada 
+2026-11-05 02:43:15.708 +01:00 [WRN] Ya existe la categoria
+2026-11-05 02:43:15.717 +01:00 [INF] Categoria Creadoacorrectamente
+2026-11-05 02:43:15.718 +01:00 [INF] CACHE HIT: Registro GetAll Invalidado
+2026-11-05 02:43:56.695 +01:00 [INF] CACHE HIT: proveedor:all
+2026-11-05 03:35:25.296 +01:00 [WRN] Funko NO creado 
+2026-11-05 03:35:25.335 +01:00 [WRN] Ya existe el funko
+2026-11-05 03:35:25.529 +01:00 [INF] Funko Creado correctamente
+2026-11-05 03:35:25.536 +01:00 [INF] CACHE HIT: Registro GetAll Invalidado
+2026-11-05 03:51:52.819 +01:00 [INF] Obteniendo Funkos paginados - Página: 0, Tamaño: 10
+2026-11-05 03:52:08.987 +01:00 [INF] CACHE HIT: funkos:v0:FunkoFilterDto { Name = , PrecioMax = , PrecioMin = , Categoria = , IsDeleted = , StockMin = , Page = 0, Size = 10, SortBy = id, Direction = asc }
+2026-11-05 03:52:12.661 +01:00 [INF] CACHE HIT: funkos:v0:FunkoFilterDto { Name = , PrecioMax = , PrecioMin = , Categoria = , IsDeleted = , StockMin = , Page = 0, Size = 10, SortBy = id, Direction = asc }
+2026-11-05 03:55:20.034 +01:00 [INF] CACHE HIT: funkos:v0:FunkoFilterDto { Name = , PrecioMax = , PrecioMin = , Categoria = , IsDeleted = , StockMin = , Page = 0, Size = 10, SortBy = id, Direction = asc }
+2026-11-05 03:55:22.765 +01:00 [INF] CACHE HIT: funkos:v0:FunkoFilterDto { Name = , PrecioMax = , PrecioMin = , Categoria = , IsDeleted = , StockMin = , Page = 0, Size = 10, SortBy = id, Direction = asc }
+2026-11-05 03:55:32.917 +01:00 [INF] CACHE HIT: funkos:v0:FunkoFilterDto { Name = , PrecioMax = , PrecioMin = , Categoria = , IsDeleted = , StockMin = , Page = 0, Size = 10, SortBy = id, Direction = asc }
+2026-11-05 03:55:33.822 +01:00 [INF] CACHE HIT: funkos:v0:FunkoFilterDto { Name = , PrecioMax = , PrecioMin = , Categoria = , IsDeleted = , StockMin = , Page = 0, Size = 10, SortBy = id, Direction = asc }
+2026-11-05 03:55:42.266 +01:00 [INF] CACHE HIT: funkos:v0:FunkoFilterDto { Name = , PrecioMax = , PrecioMin = , Categoria = , IsDeleted = , StockMin = , Page = 0, Size = 10, SortBy = id, Direction = asc }
+2026-11-05 03:55:50.396 +01:00 [INF] CACHE HIT: funkos:v0:FunkoFilterDto { Name = , PrecioMax = , PrecioMin = , Categoria = , IsDeleted = , StockMin = , Page = 0, Size = 10, SortBy = id, Direction = asc }
+2026-11-05 03:55:51.408 +01:00 [INF] CACHE HIT: funkos:v0:FunkoFilterDto { Name = , PrecioMax = , PrecioMin = , Categoria = , IsDeleted = , StockMin = , Page = 0, Size = 10, SortBy = id, Direction = asc }
+2026-11-05 03:55:57.558 +01:00 [INF] CACHE HIT: funkos:v0:FunkoFilterDto { Name = , PrecioMax = , PrecioMin = , Categoria = , IsDeleted = , StockMin = , Page = 0, Size = 10, SortBy = id, Direction = asc }
+2026-11-05 03:56:03.616 +01:00 [INF] CACHE HIT: funkos:v0:FunkoFilterDto { Name = , PrecioMax = , PrecioMin = , Categoria = , IsDeleted = , StockMin = , Page = 0, Size = 10, SortBy = id, Direction = asc }
+2026-11-05 03:56:04.625 +01:00 [INF] CACHE HIT: funkos:v0:FunkoFilterDto { Name = , PrecioMax = , PrecioMin = , Categoria = , IsDeleted = , StockMin = , Page = 0, Size = 10, SortBy = id, Direction = asc }
+2026-11-05 03:56:13.744 +01:00 [INF] CACHE HIT: funkos:v0:FunkoFilterDto { Name = , PrecioMax = , PrecioMin = , Categoria = , IsDeleted = , StockMin = , Page = 0, Size = 10, SortBy = id, Direction = asc }
+2026-11-05 03:56:14.548 +01:00 [INF] CACHE HIT: funkos:v0:FunkoFilterDto { Name = , PrecioMax = , PrecioMin = , Categoria = , IsDeleted = , StockMin = , Page = 0, Size = 10, SortBy = id, Direction = asc }
+2026-11-05 03:56:31.449 +01:00 [WRN] Funko NO creado 
+2026-11-05 03:56:31.456 +01:00 [WRN] Ya existe el funko
+2026-11-05 03:56:31.670 +01:00 [INF] Funko Creado correctamente
+2026-11-05 03:56:31.671 +01:00 [INF] CACHE HIT: Registro GetAll Invalidado
+2026-11-05 03:56:40.003 +01:00 [WRN] Funko NO creado 
+2026-11-05 03:56:40.006 +01:00 [WRN] Ya existe el funko
+2026-11-05 03:56:40.015 +01:00 [INF] Funko Creado correctamente
+2026-11-05 03:56:40.016 +01:00 [INF] CACHE HIT: Registro GetAll Invalidado
+2026-11-05 03:56:46.430 +01:00 [WRN] Funko NO creado 
+2026-11-05 03:56:46.432 +01:00 [WRN] Ya existe el funko
+2026-11-05 03:56:46.437 +01:00 [INF] Funko Creado correctamente
+2026-11-05 03:56:46.438 +01:00 [INF] CACHE HIT: Registro GetAll Invalidado
+2026-11-05 03:56:53.577 +01:00 [WRN] Funko NO creado 
+2026-11-05 03:56:53.580 +01:00 [WRN] Ya existe el funko
+2026-11-05 03:56:53.588 +01:00 [INF] Funko Creado correctamente
+2026-11-05 03:56:53.589 +01:00 [INF] CACHE HIT: Registro GetAll Invalidado
+2026-11-05 03:56:58.836 +01:00 [WRN] Funko NO creado 
+2026-11-05 03:56:58.839 +01:00 [WRN] Ya existe el funko
+2026-11-05 03:56:58.846 +01:00 [INF] Funko Creado correctamente
+2026-11-05 03:56:58.847 +01:00 [INF] CACHE HIT: Registro GetAll Invalidado
+2026-11-05 03:57:07.670 +01:00 [INF] Obteniendo Funkos paginados - Página: 0, Tamaño: 10
+2026-11-05 03:57:47.824 +01:00 [INF] CACHE HIT: funkos:v5:FunkoFilterDto { Name = , PrecioMax = , PrecioMin = , Categoria = , IsDeleted = , StockMin = , Page = 0, Size = 10, SortBy = id, Direction = asc }
+2026-11-05 03:57:55.891 +01:00 [INF] CACHE HIT: funkos:v5:FunkoFilterDto { Name = , PrecioMax = , PrecioMin = , Categoria = , IsDeleted = , StockMin = , Page = 0, Size = 10, SortBy = id, Direction = asc }
+2026-11-05 03:58:05.687 +01:00 [INF] CACHE HIT: funkos:v5:FunkoFilterDto { Name = , PrecioMax = , PrecioMin = , Categoria = , IsDeleted = , StockMin = , Page = 0, Size = 10, SortBy = id, Direction = asc }
+2026-11-05 03:58:58.583 +01:00 [INF] Obteniendo Funkos paginados - Página: 0, Tamaño: 0
+2026-11-05 03:59:05.052 +01:00 [INF] CACHE HIT: funkos:v5:FunkoFilterDto { Name = , PrecioMax = , PrecioMin = , Categoria = , IsDeleted = , StockMin = , Page = 0, Size = 0, SortBy = id, Direction = asc }
+2026-11-05 03:59:05.709 +01:00 [INF] CACHE HIT: funkos:v5:FunkoFilterDto { Name = , PrecioMax = , PrecioMin = , Categoria = , IsDeleted = , StockMin = , Page = 0, Size = 0, SortBy = id, Direction = asc }
+2026-11-05 03:59:27.413 +01:00 [INF] Obteniendo Funkos paginados - Página: 0, Tamaño: 1
+2026-11-05 03:59:53.878 +01:00 [INF] CACHE HIT: funkos:v5:FunkoFilterDto { Name = , PrecioMax = , PrecioMin = , Categoria = , IsDeleted = , StockMin = , Page = 0, Size = 1, SortBy = id, Direction = asc }
+2026-11-05 03:59:54.726 +01:00 [INF] CACHE HIT: funkos:v5:FunkoFilterDto { Name = , PrecioMax = , PrecioMin = , Categoria = , IsDeleted = , StockMin = , Page = 0, Size = 1, SortBy = id, Direction = asc }
+2026-11-05 04:03:22.862 +01:00 [INF] CACHE HIT: funkos:v5:FunkoFilterDto { Name = , PrecioMax = , PrecioMin = , Categoria = , IsDeleted = , StockMin = , Page = 0, Size = 10, SortBy = id, Direction = asc }
+2026-11-05 04:03:35.317 +01:00 [INF] CACHE HIT: funkos:v5:FunkoFilterDto { Name = , PrecioMax = , PrecioMin = , Categoria = , IsDeleted = , StockMin = , Page = 0, Size = 10, SortBy = id, Direction = asc }
+2026-11-05 04:05:16.739 +01:00 [INF] Obteniendo Funkos paginados - Página: 2, Tamaño: 3
+2026-11-05 04:05:32.175 +01:00 [INF] Obteniendo Funkos paginados - Página: 1, Tamaño: 3
+2026-11-05 04:06:20.578 +01:00 [INF] CACHE HIT: funkos:v0:FunkoFilterDto { Name = , PrecioMax = , PrecioMin = , Categoria = , IsDeleted = , StockMin = , Page = 1, Size = 3, SortBy = id, Direction = asc }
+2026-11-05 04:06:27.103 +01:00 [INF] Obteniendo Funkos paginados - Página: 0, Tamaño: 3
+2026-11-05 04:08:19.709 +01:00 [INF] Obteniendo Funkos paginados - Página: 0, Tamaño: 3

@@ -37,7 +37,7 @@ public static class ApplicationInfraestructure
         // Registrar configuración
         services.AddSingleton(settings);
         // Crear una única instancia de MongoClient
-        services.AddSingleton<IMongoClient>(_ => new MongoDB.Driver.MongoClient(settings.ConnectionString));
+        services.AddSingleton<IMongoClient>(_ => new MongoClient(settings.ConnectionString));
         // Registrar contexto
         services.AddSingleton<MongoDbContext>();
         

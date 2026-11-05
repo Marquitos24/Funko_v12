@@ -2,7 +2,7 @@
 
 public static class CategoriaLinkHelper
 {
-    public static string GenerateLinks(long id, string baseUrl)
+    public static string GenerateLinks(string id, string baseUrl)
     {
         var links = new List<string>
         {
@@ -15,7 +15,7 @@ public static class CategoriaLinkHelper
     }
 
 // Para Update (quizá ya no necesitas el enlace de update, solo ver, borrar y la lista)
-    public static string GenerateUpdateLinks(long id, string baseUrl)
+    public static string GenerateUpdateLinks(string id, string baseUrl)
     {
         return string.Join(", ", new List<string>
         {
@@ -26,7 +26,7 @@ public static class CategoriaLinkHelper
     }
 
     // Para Delete (como ya se ha borrado, el recurso ya no existe; solo puedes volver a la lista o crear uno nuevo)
-    public static string GenerateDeleteLinks(long id, string baseUrl)
+    public static string GenerateDeleteLinks(string id, string baseUrl)
     {
         return string.Join(", ", new List<string>
         {

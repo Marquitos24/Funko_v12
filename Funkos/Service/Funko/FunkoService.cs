@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using FluentValidation;
 using Funkos.Dto;
+using Funkos.Dto.Common;
 using Funkos.Dto.Funko;
 using Funkos.Errors;
 using Funkos.Mappers;
@@ -12,19 +13,35 @@ namespace Funkos.Service;
 
 public class FunkoService(IFunkoRepository repository, IValidator<FunkoCreateDto> _validatorCreateAsync, IValidator<FunkoUpdateDto> _validatorUpdateAsync, ILogger<FunkoService> logger ) : IFunkoService
 {
-    public async Task<Result<List<FunkosConCategoriaDtoResponse>, DomainErrors>>  GetAllAsync(string? categoria, decimal? precioMin, decimal? precioMax, CancellationToken cancellationToken)
+    /*
+     * public async Task<Result<List<FunkosConCategoriaDtoResponse>, DomainErrors>>  GetAllAsync(CancellationToken cancellationToken)
     {
         List<Funko> funkos = await repository.FindAllAsync(cancellationToken);
        // IEnumerable<FunkoQueryDto> funkosDto = service.GetAll();
-       
-       logger.LogInformation("Listar Funkos");
-        if (!string.IsNullOrEmpty(categoria)) 
-            funkos = funkos.Where(f => f.Categoria.Name == categoria).OrderByDescending(f => f.Categoria).ToList();
-        if (precioMin.HasValue) funkos = funkos.Where(f => f.Precio >= precioMin).OrderByDescending(f => f.Precio).ToList();
-        if (precioMax.HasValue) funkos = funkos.Where(f => f.Precio <= precioMax).OrderByDescending(f => f.Precio).ToList();
-        
         List<FunkosConCategoriaDtoResponse> funkoResponse = funkos.Select(f => FunkoMapper.ToListDtoResponse(f)).ToList();
         return Result.Success<List<FunkosConCategoriaDtoResponse>, DomainErrors>(funkoResponse);
+    }
+     */
+    
+    public async Task<Result<PagedResult<FunkosDtoResponse>, DomainErrors>> FindAllPagedAsync(FunkoFilterDto dto, CancellationToken cancellationToken)
+    {
+        logger.LogInformation("Obteniendo Funkos paginados - Página: {Page}, Tamaño: {Size}", dto.Page, dto.Size);
+
+        // 1. Obtenemos la tupla del repo (FunkoFilterDto)
+        var (funkos, totalCount) = await repository.FindAllPagedAsync(dto, cancellationToken);
+        
+        // 2. Mapeamos las entidades a tu FunkosDtoResponse real
+        var dtos = funkos.ToDtoList();
+
+        var pagedResult = new PagedResult<FunkosDtoResponse>
+        {
+            Items = dtos,
+            TotalCount = totalCount,
+            Page = dto.Page + 1,
+            PageSize = dto.Size
+        };
+
+        return Result.Success<PagedResult<FunkosDtoResponse>, DomainErrors>(pagedResult);
     }
     
     public async Task<Result<FunkosDtoResponse, DomainErrors>> GetByIdAsync(long id, CancellationToken cancellationToken)
@@ -33,7 +50,7 @@ public class FunkoService(IFunkoRepository repository, IValidator<FunkoCreateDto
         if (id <= 0) return Result.Failure<FunkosDtoResponse, DomainErrors>(FunkoError.NotFound(id));
         Funko? funko = await repository.FindByIdAsync(id, cancellationToken); 
         logger.LogWarning("Funko {Id} NO encontrado ", id);
-        if(funko == null) return Result.Failure<FunkosDtoResponse, DomainErrors>(FunkoError.NotFound()); logger.LogWarning("Funko {Id} NO encontrado ", id);
+        if(funko == null) {logger.LogWarning("Funko {Id} NO encontrado ", id); return Result.Failure<FunkosDtoResponse, DomainErrors>(FunkoError.NotFound());} 
        
         FunkosDtoResponse funkoResponse =  FunkoMapper.ToDtoResponse(funko);
         return Result.Success<FunkosDtoResponse, DomainErrors>(funkoResponse);

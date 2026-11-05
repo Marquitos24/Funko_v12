@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "buM9tXwOB1E=",
+  "dgSpecHash": "UxUa7VCjEhs=",
   "success": true,
   "projectFilePath": "C:\\Users\\Marcos\\Documents\\Proyectos\\Back-end\\C#\\Funkos\\Funkos\\Funkos.csproj",
   "expectedPackageFiles": [
@@ -26,7 +26,6 @@
     "C:\\Users\\Marcos\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\10.0.14\\microsoft.entityframeworkcore.analyzers.10.0.14.nupkg.sha512",
     "C:\\Users\\Marcos\\.nuget\\packages\\microsoft.entityframeworkcore.design\\10.0.0\\microsoft.entityframeworkcore.design.10.0.0.nupkg.sha512",
     "C:\\Users\\Marcos\\.nuget\\packages\\microsoft.entityframeworkcore.relational\\10.0.4\\microsoft.entityframeworkcore.relational.10.0.4.nupkg.sha512",
-    "C:\\Users\\Marcos\\.nuget\\packages\\microsoft.extensions.caching.memory\\10.0.14\\microsoft.extensions.caching.memory.10.0.14.nupkg.sha512",
     "C:\\Users\\Marcos\\.nuget\\packages\\microsoft.extensions.caching.stackexchangeredis\\10.0.14\\microsoft.extensions.caching.stackexchangeredis.10.0.14.nupkg.sha512",
     "C:\\Users\\Marcos\\.nuget\\packages\\microsoft.extensions.dependencymodel\\10.0.0\\microsoft.extensions.dependencymodel.10.0.0.nupkg.sha512",
     "C:\\Users\\Marcos\\.nuget\\packages\\microsoft.net.stringtools\\17.14.28\\microsoft.net.stringtools.17.14.28.nupkg.sha512",
@@ -69,18 +68,6 @@
     "C:\\Users\\Marcos\\.nuget\\packages\\zstdsharp.port\\0.7.3\\zstdsharp.port.0.7.3.nupkg.sha512"
   ],
   "logs": [
-    {
-      "code": "NU1510",
-      "level": "Warning",
-      "message": "PackageReference Microsoft.Extensions.Caching.Memory no se eliminará. Este paquete está disponible automáticamente y no es necesario hacer referencia a él explícitamente. Quite el elemento PackageReference.",
-      "projectPath": "C:\\Users\\Marcos\\Documents\\Proyectos\\Back-end\\C#\\Funkos\\Funkos\\Funkos.csproj",
-      "warningLevel": 1,
-      "filePath": "C:\\Users\\Marcos\\Documents\\Proyectos\\Back-end\\C#\\Funkos\\Funkos\\Funkos.csproj",
-      "libraryId": "Microsoft.Extensions.Caching.Memory",
-      "targetGraphs": [
-        "net10.0"
-      ]
-    },
     {
       "code": "NU1902",
       "level": "Warning",

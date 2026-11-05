@@ -1,11 +1,6 @@
-﻿using Funkos.Models;
-using Funkos.Repositories;
-using Funkos.Dto.Funko;
-using Funkos.Mappers;
+﻿using Funkos.Dto.Funko;
 using Funkos.Service;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
-using CSharpFunctionalExtensions;
 using Funkos.Dto;
 using Funkos.Errors;
 using Funkos.Helper;
@@ -17,12 +12,11 @@ namespace Funkos.Controller;
 public class FunkoController(IFunkoService service) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<List<FunkosDtoResponse>>> GetAllAsync([FromQuery] string? categoria,
-        [FromQuery] decimal? precioMin,
-        [FromQuery] decimal? precioMax, CancellationToken cancellationToken)
+    public async Task<ActionResult<List<FunkosDtoResponse>>> GetAllAsync([FromQuery] FunkoFilterDto filter, CancellationToken cancellationToken)
     {
-       var resultado = await service.GetAllAsync(categoria, precioMin, precioMax, cancellationToken);
-       if (resultado.Value.Count <= 0) { return Ok("Aún no hay Funkos"); }
+        var resultado = await service.FindAllPagedAsync(filter, cancellationToken);
+       //if (resultado.Value.Count <= 0) { return Ok("Aún no hay Funkos"); }
+     
        return resultado.IsSuccess 
            ? Ok(resultado.Value)
            : resultado.Error.ToHttpResult<List<FunkosDtoResponse>>();

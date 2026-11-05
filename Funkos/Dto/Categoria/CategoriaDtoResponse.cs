@@ -3,7 +3,7 @@
 namespace Funkos.Dto.Categoria;
 
 public record CategoriaDtoResponse(
-    long Id,
+    string IdY,
     string Name,
     string Descripcion,
     DateTime CreateAt,

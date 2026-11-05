@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Funkos.Models;
 using Funkos.Validations;
 
 namespace Funkos.Dto.Categoria;

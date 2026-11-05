@@ -1,12 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Funkos.Models;
+using Funkos.idGenerators;
 using Funkos.Validations;
 
 namespace Funkos.Dto.Categoria;
 
 public record CategoriaUpdateDto
 {
-    public long Id { get; set; }
+    [IdYoutube]
+    public string? IdY { get; set; }
     
     [Required (ErrorMessage =  "El nombre de la categoria es obligatoria")]
     [StringLength(200, MinimumLength = 1, ErrorMessage = "El nombre de la categoria no puede superar los 200 caracteres y debe ser superior a 1")]

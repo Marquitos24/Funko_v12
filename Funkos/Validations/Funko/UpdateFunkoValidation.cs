@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Funkos.Dto;
+using Funkos.idGenerators;
 using Funkos.Repositories;
 using Funkos.Repositories.Categoria;
 using Funkos.Repositories.Proveedor;
@@ -32,10 +33,11 @@ public class UpdateFunkoValidation: AbstractValidator<FunkoUpdateDto>
         RuleFor(x => x.Stock)
             .GreaterThanOrEqualTo(0)
             .WithMessage("El stock no puede ser negativo");
-        
+
         RuleFor(x => x.CategoriaId)
-            .GreaterThan(0)
-            .WithMessage("Debes seleccionar una categoría válida")
+            .MaximumLength(IdYoutube.Longitud)
+            .Matches(IdYoutube.PatronTexto)
+            .WithMessage(IdYoutube.MensajeFormato)
             .MustAsync(async (id, cancellation) =>
                 await categoriaRepository.ExistsAsync(id, cancellation))
             .WithMessage("La categoría no existe");

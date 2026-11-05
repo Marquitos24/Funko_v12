@@ -8,7 +8,9 @@ public record Funko
     
     public required decimal Precio  { get; set; }
     
-    public required long CategoriaId { get; set; }
+    //Id Youtube
+    public required string? CategoriaId { get; set; }
+    
     public Categoria Categoria { get; set; } = null!;
     
     //MONGO
@@ -16,7 +18,7 @@ public record Funko
     
     public required int Stock { get; set; }
     
-    public DateTime CreateAt {get; set; }
+    public DateTime CreateAt {get; init; }
     public DateTime? UpdateAt {get; set; } 
     
     public bool IsDeleted {get; set; }

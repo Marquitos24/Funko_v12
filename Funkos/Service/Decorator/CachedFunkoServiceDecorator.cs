@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using Funkos.Cache;
 using Funkos.Dto;
+using Funkos.Dto.Common;
 using Funkos.Dto.Funko;
 using Funkos.Errors;
 using Funkos.Models;
@@ -14,19 +15,16 @@ public class CachedFunkoServiceDecorator(IFunkoService service, ICacheService ca
     //Incrementa de 1 en 1 de forma atomic (no se intercala con otro incremento). ref == referencia  a la var para modificarla
     private static void InvalidatePagedCache() => Interlocked.Increment(ref _cacheVersion);
     
-    public async Task<Result<List<FunkosConCategoriaDtoResponse>, DomainErrors>> GetAllAsync(string? categoria,
-        decimal? precioMin, decimal? precioMax, CancellationToken cancellationToken)
+    public async Task<Result<PagedResult<FunkosDtoResponse>, DomainErrors>> FindAllPagedAsync(FunkoFilterDto dto, CancellationToken cancellationToken)
     {
         //lee el valorr actualizado con visibilidad entre hilos
         var version = Volatile.Read(ref _cacheVersion);
         
-        var categoriaKey = string.IsNullOrWhiteSpace(categoria) ? "todas" : categoria.Trim().ToLowerInvariant();
-        
-        var cacheKey = $"funkos:v{version}:categoria:{categoriaKey}:pmin:{precioMin}:pmax:{precioMax}";
-        var cached = await cache.GetAsync<List<FunkosConCategoriaDtoResponse>>(cacheKey, cancellationToken);
-        if (cached is not null) {logger.LogInformation("CACHE HIT: {CacheKey}", cacheKey); return Result.Success<List<FunkosConCategoriaDtoResponse>, DomainErrors>(cached);}
+        var cacheKey = $"funkos:v{version}:{dto}";
+        var cached = await cache.GetAsync<PagedResult<FunkosDtoResponse>>(cacheKey, cancellationToken);
+        if (cached is not null) {logger.LogInformation("CACHE HIT: {CacheKey}", cacheKey); return Result.Success<PagedResult<FunkosDtoResponse>, DomainErrors>(cached);}
 
-        var result = await service.GetAllAsync(categoria, precioMin, precioMax, cancellationToken);
+        var result = await service.FindAllPagedAsync( dto, cancellationToken);
         if (result.IsSuccess) await cache.SetAsync(cacheKey, result.Value, TimeSpan.FromMinutes(30), cancellationToken);
         return result;
     }

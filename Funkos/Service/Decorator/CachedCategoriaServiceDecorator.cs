@@ -20,7 +20,7 @@ public class CachedCategoriaServiceDecorator(ICategoriaService service, ICacheSe
     }
 
     
-    public async Task<Result<CategoriaWithFunkosResponseDto, DomainErrors>> GetByIdAsync(long id,  CancellationToken cancellationToken)
+    public async Task<Result<CategoriaWithFunkosResponseDto, DomainErrors>> GetByIdAsync(string id,  CancellationToken cancellationToken)
     {
         var cacheKey = $"categoria:{id}";
         var cached = await cache.GetAsync<CategoriaWithFunkosResponseDto>(cacheKey, cancellationToken);
@@ -39,7 +39,7 @@ public class CachedCategoriaServiceDecorator(ICategoriaService service, ICacheSe
         return result;
     }
 
-    public async Task<Result<CategoriaDtoResponse, DomainErrors>> UpdateAsync(long id, CategoriaUpdateDto updatedCat, CancellationToken cancellationToken)
+    public async Task<Result<CategoriaDtoResponse, DomainErrors>> UpdateAsync(string id, CategoriaUpdateDto updatedCat, CancellationToken cancellationToken)
     {
         var result = await service.UpdateAsync(id, updatedCat, cancellationToken);
         if (result.IsSuccess)
@@ -54,7 +54,7 @@ public class CachedCategoriaServiceDecorator(ICategoriaService service, ICacheSe
         return result;
     }
 
-    public async Task<Result<bool, DomainErrors>> DeleteAsync(long id, CancellationToken cancellationToken)
+    public async Task<Result<bool, DomainErrors>> DeleteAsync(string id, CancellationToken cancellationToken)
     {
         var result = await service.DeleteAsync(id, cancellationToken);
         if (result.IsSuccess)

@@ -24,11 +24,10 @@ namespace Funkos.Migrations
 
             modelBuilder.Entity("Funkos.Models.Categoria", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<string>("IdY")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                        .HasMaxLength(11)
+                        .HasColumnType("character varying(11)");
 
                     b.Property<DateTime>("CreateAt")
                         .HasColumnType("timestamp with time zone");
@@ -46,7 +45,7 @@ namespace Funkos.Migrations
                     b.Property<DateTime?>("UpdateAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("Id");
+                    b.HasKey("IdY");
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -62,8 +61,10 @@ namespace Funkos.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<long>("CategoriaId")
-                        .HasColumnType("bigint");
+                    b.Property<string>("CategoriaId")
+                        .IsRequired()
+                        .HasMaxLength(11)
+                        .HasColumnType("character varying(11)");
 
                     b.Property<DateTime>("CreateAt")
                         .HasColumnType("timestamp with time zone");
@@ -104,8 +105,6 @@ namespace Funkos.Migrations
 
                     b.ToTable("Funkos", null, t =>
                         {
-                            t.HasCheckConstraint("CK_Funko_CategoriaId", "\"CategoriaId\" >= 1");
-
                             t.HasCheckConstraint("CK_Funko_Precio", "\"Precio\" >= 1.00");
 
                             t.HasCheckConstraint("CK_Funko_Stock", "\"Stock\" >= 0");

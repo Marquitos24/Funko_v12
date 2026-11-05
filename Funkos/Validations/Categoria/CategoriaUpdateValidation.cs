@@ -15,7 +15,7 @@ public class CategoriaUpdateValidation : AbstractValidator<CategoriaUpdateDto>
             .WithMessage("El nombre no puede superar los 200 caracteres")
             .MustAsync(async (dto, name, context, cancellationToken) =>
             {
-                var id = (long)context.RootContextData["CatId"];
+                var id = (string)context.RootContextData["CatId"];
                 return !await repo.ExistsByNameAsync(name, id, cancellationToken);
             })
             .WithMessage("Ya existe una categoria con ese nombre");

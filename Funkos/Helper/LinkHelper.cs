@@ -8,10 +8,10 @@ public static class LinkHelper
     {
         var links = new List<string>
         {
-            $"<{baseUrl}/{id}>; rel=\"Comprobar\"; method=\"GET\"",
-            $"<{baseUrl}/{id}>; rel=\"Actualizar\"; method=\"PUT\"",
-            $"<{baseUrl}/{id}>; rel=\"Eliminar\"; method=\"DELETE\"",
-            $"<{baseUrl}>; rel=\"Lista\"; method=\"GET\""
+            $"<{baseUrl}>; rel=\"collection\"; method=\"GET\"",
+            $"<{baseUrl}/{id}>; rel=\"selfId\"; method=\"GET\"",
+            $"<{baseUrl}/{id}>; rel=\"update\"; method=\"PUT\"",
+            $"<{baseUrl}/{id}>; rel=\"delete\"; method=\"DELETE\"",
         };
         return string.Join(", ", links);
     }
@@ -20,9 +20,9 @@ public static class LinkHelper
     {
         return string.Join(", ", new List<string>
         {
-            $"<{baseUrl}/{id}>; rel=\"Comprobar\"; method=\"GET\"",
-            $"<{baseUrl}/{id}>; rel=\"Eliminar\"; method=\"DELETE\"",
-            $"<{baseUrl}>; rel=\"Lista\"; method=\"GET\""
+            $"<{baseUrl}/{id}>; rel=\"self\"; method=\"GET\"",
+            $"<{baseUrl}/{id}>; rel=\"delete\"; method=\"DELETE\"",
+            $"<{baseUrl}>; rel=\"collection\"; method=\"GET\""
         });
     }
 
@@ -31,9 +31,9 @@ public static class LinkHelper
     {
         return string.Join(", ", new List<string>
         {
-            $"<{baseUrl}/{id}>; rel=\"Comprobar\"; method=\"GET\"",
-            $"<{baseUrl}>; rel=\"Lista\"; method=\"GET\"",
-            $"<{baseUrl}>; rel=\"Crear nuevo\"; method=\"POST\""
+            $"<{baseUrl}/{id}>; rel=\"self\"; method=\"GET\"",
+            $"<{baseUrl}>; rel=\"collection\"; method=\"GET\"",
+            $"<{baseUrl}>; rel=\"create\"; method=\"POST\""
         });
     }
 }

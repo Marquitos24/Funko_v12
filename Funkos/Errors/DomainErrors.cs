@@ -17,7 +17,9 @@ public sealed record NotFoundError(string Message) : DomainErrors(Message)
     
     public static NotFoundError ListaVacia(string resourceType = "Recurso") => new($"No se han encontrado {resourceType}");
     
-    public static NotFoundError Delete(string nombre, string recurso) => new($"No se ha podido eliminar el {recurso} {nombre}");
+    public static NotFoundError Delete(string recurso) => new($"No se ha podido eliminar el {recurso}");
+    
+    public static NotFoundError Messagee(string message) => new(message);
     
 }
 // 400 Bad Request - Validación de datos

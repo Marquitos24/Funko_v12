@@ -7,7 +7,7 @@ namespace Funkos.Dto.Proveedor;
 
 public record ProveedorUpdateDto
 {
-    [RegularExpression(@"^[a-fA-F0-0]{24}$", ErrorMessage =  "Formato invalido de ID")]
+    [RegularExpression(@"^[0-9a-fA-F]{24}$", ErrorMessage =  "Formato invalido de ID")]
     public ObjectId Id { get; set; }
     
     [Required (ErrorMessage =  "El nombre de la categoria es obligatoria")]

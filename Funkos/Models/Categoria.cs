@@ -1,8 +1,10 @@
-﻿namespace Funkos.Models;
+﻿using Funkos.idGenerators;
+
+namespace Funkos.Models;
 
 public record Categoria
 {
-    public long Id { get; init; }
+    public string IdY { get; set; } = null!; // ! en null ==> No mostrar advertencias por esto.
 
     public required string Name { get; set; } = string.Empty;
     

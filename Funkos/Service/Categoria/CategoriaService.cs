@@ -18,10 +18,10 @@ public class CategoriaService(ICategoriaRepository repository, IValidator<Catego
         return Result.Success<List<CategoriaDtoResponse>, DomainErrors>(catResponse);
     }
     
-    public async Task<Result<CategoriaWithFunkosResponseDto, DomainErrors>> GetByIdAsync(long id,  CancellationToken cancellationToken)
+    public async Task<Result<CategoriaWithFunkosResponseDto, DomainErrors>> GetByIdAsync(string id,  CancellationToken cancellationToken)
     {
         logger.LogInformation("Buscando Categoria {Id}", id);
-        if (id <= 0) return Result.Failure<CategoriaWithFunkosResponseDto, DomainErrors>(CategoriaError.NotFound(id));
+        if (string.IsNullOrWhiteSpace(id)) return Result.Failure<CategoriaWithFunkosResponseDto, DomainErrors>(CategoriaError.NotFound(id));
         Categoriaa? cat = await repository.FindByIdAsync(id, cancellationToken); 
         if(cat == null) {logger.LogWarning("Categooria {Id} NO encontrada ", id); return Result.Failure<CategoriaWithFunkosResponseDto, DomainErrors>(CategoriaError.NotFound());} 
         
@@ -54,7 +54,7 @@ public class CategoriaService(ICategoriaRepository repository, IValidator<Catego
         return Result.Success<CategoriaDtoResponse, DomainErrors>(catResponse);
     }
     
-    public async Task<Result<CategoriaDtoResponse, DomainErrors>> UpdateAsync(long id, CategoriaUpdateDto updatedCat,  CancellationToken cancellationToken)
+    public async Task<Result<CategoriaDtoResponse, DomainErrors>> UpdateAsync(string id, CategoriaUpdateDto updatedCat,  CancellationToken cancellationToken)
     {
         // Si la validación falla, ModelState.IsValid será false automáticamente
         var context = new ValidationContext<CategoriaUpdateDto>(updatedCat);
@@ -70,7 +70,7 @@ public class CategoriaService(ICategoriaRepository repository, IValidator<Catego
         
         //Buscamos el Categoria por Id y comprobamos si existe, si no salta error
         var proveedorId = await repository.FindByIdAsync(id, cancellationToken);
-        if (id <= 0 || proveedorId is null) {logger.LogWarning("No se encontro el Proveedor {id}", id); return Result.Failure<CategoriaDtoResponse, DomainErrors>(CategoriaError.NotFound(id));} 
+        if (string.IsNullOrWhiteSpace(id) || proveedorId is null) {logger.LogWarning("No se encontro el Proveedor {id}", id); return Result.Failure<CategoriaDtoResponse, DomainErrors>(CategoriaError.NotFound(id));} 
 
         
         //Convertimos el RequestDTO al Modelo y validamos, si es null salta error
@@ -94,17 +94,17 @@ public class CategoriaService(ICategoriaRepository repository, IValidator<Catego
         return Result.Success<CategoriaDtoResponse, DomainErrors>(catResponse);
     }
 
-    public async Task<Result<bool, DomainErrors>> DeleteAsync(long id,  CancellationToken cancellationToken)
+    public async Task<Result<bool, DomainErrors>> DeleteAsync(string id,  CancellationToken cancellationToken)
     {
         //Comprobamos que el Id existe, si no salta error
         var catId = await repository.FindByIdAsync(id, cancellationToken);
-        if (id <= 0 || catId is null) return Result.Failure<bool, DomainErrors>(CategoriaError.NotFound(id));
+        if (string.IsNullOrWhiteSpace(id) || catId is null) {logger.LogWarning("Categoria {id} NO eliminadaa", id); return Result.Failure<bool, DomainErrors>(CategoriaError.NotFound(id));}
         
         if(catId.Funkos.Any()) return Result.Failure<bool, DomainErrors>(CategoriaError.BusinessRule(catId.Funkos.Count()));
         
         await repository.DeleteAsync(id, cancellationToken);
         
-        if (catId != null) return Result.Failure<bool, DomainErrors>(CategoriaError.NotFound(catId.Name));
+        if (catId is null) {logger.LogWarning("Categoria {id} NO eliminada", id); return Result.Failure<bool, DomainErrors>(CategoriaError.NotFound("No se ha podido eliminar la Categoria"));}
         logger.LogWarning("Categoria {id} eliminada correctamente", id);
         return Result.Success<bool, DomainErrors>(true);
     }

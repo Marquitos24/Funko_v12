@@ -4,7 +4,7 @@ public record FunkosConCategoriaDtoResponse(
     long Id,
     string Name,
     decimal Precio,
-    long CategoriaId,
+    string? CategoriaId,
     string CategoriaName,
     string ProveedorId,
     int Stock,

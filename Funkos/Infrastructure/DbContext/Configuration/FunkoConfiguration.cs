@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Funkos.Configuration;
+namespace Funkos.DbContext.Configuration;
 
 public class FunkoConfiguration : IEntityTypeConfiguration<Funko>
 {
@@ -22,12 +22,14 @@ public class FunkoConfiguration : IEntityTypeConfiguration<Funko>
         {
             t.HasCheckConstraint("CK_Funko_Precio", "\"Precio\" >= 1.00");
             t.HasCheckConstraint("CK_Funko_Stock", "\"Stock\" >= 0");
-            t.HasCheckConstraint("CK_Funko_CategoriaId", "\"CategoriaId\" >= 1");
         });
         
         builder.HasOne(p => p.Categoria)
             .WithMany(c => c.Funkos)
             .HasForeignKey(p => p.CategoriaId);
+        
+        builder.Property(p => p.CategoriaId)
+            .HasMaxLength(11).IsRequired();
         
         builder.Property(p => p.ProveedorId)
             .HasMaxLength(24).IsRequired();

@@ -11,16 +11,22 @@ public static class CategoriaMapper
         Descripcion = request.Descripcion,
     };
     
-    public static Categoria ToEntityUpdate(this CategoriaUpdateDto request) => new Categoria
+    public static Categoria ToEntityUpdate(this CategoriaUpdateDto request)
     {
-        Id = request.Id,
+        var cat = new Categoria
+        {
         Name = request.Name,
         Descripcion = request.Descripcion
-    };
+        };
+        
+        if (!string.IsNullOrWhiteSpace(request.IdY)) cat.IdY = request.IdY;
+        
+        return cat;
+    }
 
 
     public static CategoriaDtoResponse ToDtoResponse(this Categoria cat) => new CategoriaDtoResponse(
-        cat.Id,
+        cat.IdY,
         cat.Name, 
         cat.Descripcion,
         cat.CreateAt,
@@ -28,7 +34,7 @@ public static class CategoriaMapper
     );
     
     public static CategoriaWithFunkosResponseDto ToDtoResponseWithFunkos(this Categoria cat) => new CategoriaWithFunkosResponseDto(
-        cat.Id,
+        cat.IdY,
         cat.Name, 
         cat.Descripcion,
         cat.Funkos.Select(f => f.ToDtoParaCategoria()).ToList(),

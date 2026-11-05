@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "HRl9c5au2WE=",
+  "dgSpecHash": "lt3nY9Uu+LE=",
   "success": true,
   "projectFilePath": "C:\\Users\\Marcos\\Documents\\Proyectos\\Back-end\\C#\\Funkos\\Funkos.Test\\Funkos.Test.csproj",
   "expectedPackageFiles": [
@@ -22,6 +22,7 @@
     "C:\\Users\\Marcos\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\10.0.14\\microsoft.entityframeworkcore.analyzers.10.0.14.nupkg.sha512",
     "C:\\Users\\Marcos\\.nuget\\packages\\microsoft.entityframeworkcore.relational\\10.0.4\\microsoft.entityframeworkcore.relational.10.0.4.nupkg.sha512",
     "C:\\Users\\Marcos\\.nuget\\packages\\microsoft.extensions.caching.abstractions\\10.0.14\\microsoft.extensions.caching.abstractions.10.0.14.nupkg.sha512",
+    "C:\\Users\\Marcos\\.nuget\\packages\\microsoft.extensions.caching.memory\\10.0.14\\microsoft.extensions.caching.memory.10.0.14.nupkg.sha512",
     "C:\\Users\\Marcos\\.nuget\\packages\\microsoft.extensions.caching.stackexchangeredis\\10.0.14\\microsoft.extensions.caching.stackexchangeredis.10.0.14.nupkg.sha512",
     "C:\\Users\\Marcos\\.nuget\\packages\\microsoft.extensions.configuration\\10.0.12\\microsoft.extensions.configuration.10.0.12.nupkg.sha512",
     "C:\\Users\\Marcos\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\10.0.12\\microsoft.extensions.configuration.abstractions.10.0.12.nupkg.sha512",

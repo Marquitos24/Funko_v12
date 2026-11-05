@@ -13,9 +13,9 @@ public class CategoriaRepository  (AppDbContext db) : ICategoriaRepository
             return categorias;
         }
 
-        public async Task<CategoriaModel?> FindByIdAsync(long id, CancellationToken cancellationToken = default)
+        public async Task<CategoriaModel?> FindByIdAsync(string idY, CancellationToken cancellationToken = default)
         {
-            var categoria = await db.Categorias.Include(c => c.Funkos).AsNoTracking().FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
+            var categoria = await db.Categorias.Include(c => c.Funkos).AsNoTracking().FirstOrDefaultAsync(c => c.IdY == idY, cancellationToken);
             return categoria;
         }
 
@@ -32,9 +32,9 @@ public class CategoriaRepository  (AppDbContext db) : ICategoriaRepository
             return categoria;
         }
 
-        public async Task<CategoriaModel?> UpdateAsync(long id, CategoriaModel updatedCategoria, CancellationToken cancellationToken = default)
+        public async Task<CategoriaModel?> UpdateAsync(string idY, CategoriaModel updatedCategoria, CancellationToken cancellationToken = default)
         {
-            var categoria = await db.Categorias.FirstOrDefaultAsync(f => f.Id == id,  cancellationToken);
+            var categoria = await db.Categorias.FirstOrDefaultAsync(f => f.IdY == idY,  cancellationToken);
 
             if (categoria is null) return null;
         
@@ -45,20 +45,20 @@ public class CategoriaRepository  (AppDbContext db) : ICategoriaRepository
             await db.SaveChangesAsync(cancellationToken);
             return categoria;
         }
-        public async Task<bool> ExistsAsync(long id, CancellationToken cancellationToken = default)
+        public async Task<bool> ExistsAsync(string idY, CancellationToken cancellationToken = default)
         {
-            return await db.Categorias.AnyAsync(f => f.Id == id, cancellationToken);
+            return await db.Categorias.AnyAsync(f => f.IdY == idY, cancellationToken);
         }
         
-        public async Task<bool> ExistsByNameAsync(string name, long? id = null, CancellationToken cancellationToken = default)
+        public async Task<bool> ExistsByNameAsync(string name, string? idY = null, CancellationToken cancellationToken = default)
         {
-            return await db.Categorias.AnyAsync(f => f.Name == name && (id == null || f.Id != id), cancellationToken);
+            return await db.Categorias.AnyAsync(f => f.Name == name && (idY == null || f.IdY != idY), cancellationToken);
         }
 
     
-        public async Task<bool> DeleteAsync(long id, CancellationToken cancellationToken = default)
+        public async Task<bool> DeleteAsync(string idY, CancellationToken cancellationToken = default)
         {
-            var categoria = await db.Categorias.FirstOrDefaultAsync(f => f.Id == id, cancellationToken);
+            var categoria = await db.Categorias.FirstOrDefaultAsync(f => f.IdY == idY, cancellationToken);
             if (categoria is null) return false;
 
             db.Categorias.Remove(categoria);

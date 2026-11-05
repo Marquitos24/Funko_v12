@@ -44,7 +44,7 @@ public class ProveedorController(IProveedorService service) : ControllerBase
         var resultado = await service.AddAsync(dto, cancellationToken);
         if (resultado.IsFailure) { return resultado.Error.ToHttpResult<ProveedorDtoResponse>(); }
         //HETOAS
-        var id = resultado.Value.Id.ToString();
+        var id = resultado.Value.Id;
         
         var actionLinks = ProveedorLinkHelper.GenerateLinks(id,"/api/proveedor");
         Response.Headers.Append("Link", actionLinks);

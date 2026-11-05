@@ -3,7 +3,7 @@
 namespace Funkos.Dto.Categoria;
 
 public record CategoriaWithFunkosResponseDto(
-    long Id,
+    string IdY,
     string Name,
     string Descripcion,
     ICollection<FunkoParaCategoriaDto> Funkos,

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Funkos.idGenerators;
 using Funkos.Models;
 using Funkos.Validations;
 using Microsoft.EntityFrameworkCore;
@@ -17,10 +18,10 @@ public record FunkoCreateDto
     [NoLink]
     public required decimal Precio  { get; set; } = 0;
  
-    [Range(1, long.MaxValue, ErrorMessage = "Inserte un id mayor que 0")]
-    public required long CategoriaId { get; set; }
+    [IdYoutube]
+    public required string CategoriaId { get; set; }
     
-    [RegularExpression(@"^[a-fA-F0-0]{24}$", ErrorMessage =  "Formato invalido de ID")]
+    [RegularExpression(@"^[0-9a-fA-F]{24}$", ErrorMessage =  "Formato invalido de ID")]
     public required string ProveedorId { get; set; }
     
     public required int Stock { get; set; }

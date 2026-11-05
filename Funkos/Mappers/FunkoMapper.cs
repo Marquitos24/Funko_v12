@@ -38,6 +38,9 @@ public static class FunkoMapper
         funko.DeleteAt
     );
     
+    public static List<FunkosDtoResponse> ToDtoList(this IEnumerable<Funko> funkos) =>
+        funkos.Select(f => f.ToDtoResponse()).ToList();
+    
     public static FunkosConCategoriaDtoResponse ToListDtoResponse(this Funko funko) => new FunkosConCategoriaDtoResponse(
         funko.Id,
         funko.Name,
