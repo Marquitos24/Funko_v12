@@ -25,4 +25,7 @@ public record Proveedor
     
     [BsonElement("deletaAt")]
     public DateTime? DeleteAt {get; set; }
+    
+    [BsonElement("version")]
+    public long Version { get; set; } = 1;
 }

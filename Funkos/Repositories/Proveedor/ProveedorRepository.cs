@@ -36,6 +36,7 @@ public class ProveedorRepository(MongoDbContext context) : IProveedorRepository
     {
         updatedProv.UpdateAt= DateTime.UtcNow;
         var filtro = Builders<ProveedorModel>.Filter.Eq(p => p.Id, id) & FiltroActivos;
+        
         var result = await _collection.ReplaceOneAsync(filtro, updatedProv,  cancellationToken: cancellationToken);
         return result.IsAcknowledged ? updatedProv : null;
         // IsAcknowledged = Indica si se ha confirmado que ha recibido y reconocido la operación de escritura.

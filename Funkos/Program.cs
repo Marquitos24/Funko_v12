@@ -4,6 +4,7 @@ using Funkos.Cache;
 using Funkos.DbContext;
 using Funkos.Infrastructure;
 using Funkos.Validations;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -29,27 +30,52 @@ builder.Services.AddStackExchangeRedisCache(options =>
     options.Configuration = builder.Configuration["Redis:ConnectionString"];
 });
 
+#region Negociación de Codigo
 // Negociación de codigo
-// JSON
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    });
+    #region JSON
+    // JSON
+    builder.Services.AddControllers()
+        .AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        });
 
-//  XML
-/*
- * builder.Services.AddControllers(options =>
-    {
-        options.RespectBrowserAcceptHeader = true;   // Respetar header Accept del cliente
-        options.ReturnHttpNotAcceptable = true;       // Devolver 406 si formato no soportado
-    })
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    })
-    .AddXmlSerializerFormatters(); // Cambiado a XmlSerializer para DTOs normales (sin [DataContract])
-*/
+
+    #endregion
+
+    #region XML
+
+    //  XML
+    /*
+     * builder.Services.AddControllers(options =>
+        {
+            options.RespectBrowserAcceptHeader = true;   // Respetar header Accept del cliente
+            options.ReturnHttpNotAcceptable = true;       // Devolver 406 si formato no soportado
+        })
+        .AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        })
+        .AddXmlSerializerFormatters(); // Cambiado a XmlSerializer para DTOs normales (sin [DataContract])
+    */
+
+    #endregion
+#endregion
+
+#region Imagenes
+// Configurar límite de formularios multipart
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 10 * 1024 * 1024; // 10 MB
+});
+
+// Configurar límite del request body
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Limits.MaxRequestBodySize = 10 * 1024 * 1024; // 10 MB
+});
+#endregion
+
 // Ejecución automática vía action filter --> Paquete FluentValidation .AspNetCore
 // Requiere llamarse DESPUÉS de AddControllers() = Solo funciona en MVC/controllers
 //builder.Services.AddFluentValidationAutoValidation();
@@ -63,9 +89,23 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog(); // <- Aquí conectas Serilog con el sistema de ILogger de .NET y lo Sustitulles
 
+// ============================================================================
+// 🚀 CONSTRUCCIÓN DE LA APLICACIÓN
+// ============================================================================
+
 var app = builder.Build();
 
 app.UseExceptionHandler();
+
+// Habilitar archivos estáticos desde wwwroot
+app.UseStaticFiles();
+
+Console.WriteLine($"WebRootPath: {app.Environment.WebRootPath}");
+// Salida: C:\...\TuProyecto\wwwroot
+
+Console.WriteLine($"ContentRootPath: {app.Environment.ContentRootPath}");
+// Salida: C:\...\TuProyecto
+
 app.MapControllers();
 app.Run();
 

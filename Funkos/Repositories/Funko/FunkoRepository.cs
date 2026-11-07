@@ -68,6 +68,7 @@ public class FunkoRepository(AppDbContext db) : IFunkoRepository
             CategoriaId = newFunko.CategoriaId,
             ProveedorId = newFunko.ProveedorId,
             Stock =  newFunko.Stock,
+            Imagen = newFunko.Imagen,
             CreateAt = DateTime.UtcNow
         };
         await db.Funkos.AddAsync(funko);
@@ -86,20 +87,35 @@ public class FunkoRepository(AppDbContext db) : IFunkoRepository
         funko.CategoriaId = updatedFunko.CategoriaId;
         funko.ProveedorId = updatedFunko.ProveedorId;
         funko.Stock = updatedFunko.Stock;
+        funko.Imagen = updatedFunko.Imagen;
         funko.UpdateAt = DateTime.UtcNow;
         
+        //Incrementamos la versión para que cambie en la BD y el token invalide modificaciones concurrentes
+        funko.Version++;
+        
         await db.SaveChangesAsync(cancellationToken);
+        
+        await db.Entry(funko).ReloadAsync(cancellationToken);
+        
         return funko;
+            
     }
     
     public async Task<bool> DeleteAsync(long id, CancellationToken cancellationToken = default)
     {
-        var prov = await db.Funkos.FirstOrDefaultAsync(f => f.Id == id, cancellationToken);
-        if (prov is null) return false;
+        var funko = await db.Funkos.FirstOrDefaultAsync(f => f.Id == id, cancellationToken);
+        if (funko is null) return false;
 
-        prov.IsDeleted = true;
-        prov.DeleteAt = DateTime.UtcNow;
+        funko.IsDeleted = true;
+        funko.DeleteAt = DateTime.UtcNow;
+        
+        funko.Version++;
+        
         await db.SaveChangesAsync(cancellationToken);
+        
+        // Mejora --> Refresca los valores desde la BD para asegurar que se trae la versión exacta guardada
+        await db.Entry(funko).ReloadAsync(cancellationToken);
+        
         return true;
     }
     #endregion

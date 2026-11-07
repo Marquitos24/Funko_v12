@@ -4,6 +4,7 @@ using Funkos.Dto.Categoria;
 using Funkos.Errors;
 using Funkos.Mappers;
 using Funkos.Repositories.Categoria;
+using Microsoft.EntityFrameworkCore;
 using Categoriaa = Funkos.Models.Categoria;
 
 namespace Funkos.Service.Categoria;
@@ -80,18 +81,47 @@ public class CategoriaService(ICategoriaRepository repository, IValidator<Catego
         
         //Comprobamos que el Categoria actualizado NO tiene un nombre igual a otro Categoria
         bool yaExiste = await repository.ExistsByNameAsync(updatedCat.Name, id, cancellationToken);
-        if (yaExiste) {logger.LogWarning("Proveedor {id} con nombre duplicado", id); return Result.Failure<CategoriaDtoResponse, DomainErrors>(CategoriaError.Duplicate(proveedorModel.Name));} 
-        
+        if (yaExiste) {logger.LogWarning("Proveedor {id} con nombre duplicado", id); return Result.Failure<CategoriaDtoResponse, DomainErrors>(CategoriaError.Duplicate(proveedorModel.Name));}
 
-        //Actualizamos Categoria y comprobamos que no sea null, si lo es salta error
-        Categoriaa? cat = await repository.UpdateAsync(id, proveedorModel,  cancellationToken);
-        if (cat == null) return Result.Failure<CategoriaDtoResponse, DomainErrors>(CategoriaError.NotFound());
-        
-        //Transformamos a ResponseDTO
-        CategoriaDtoResponse catResponse = CategoriaMapper.ToDtoResponse(cat);
-        logger.LogInformation("Proveedor {id} actualizdo correctamente", id);
-        //Devolvemos
-        return Result.Success<CategoriaDtoResponse, DomainErrors>(catResponse);
+        try
+        {
+            //Actualizamos Categoria y comprobamos que no sea null, si lo es salta error
+            Categoriaa? cat = await repository.UpdateAsync(id, proveedorModel, cancellationToken);
+            if (cat == null) return Result.Failure<CategoriaDtoResponse, DomainErrors>(CategoriaError.NotFound());
+
+            //Transformamos a ResponseDTO
+            CategoriaDtoResponse catResponse = CategoriaMapper.ToDtoResponse(cat);
+            logger.LogInformation("Proveedor {id} actualizdo correctamente", id);
+            //Devolvemos
+            return Result.Success<CategoriaDtoResponse, DomainErrors>(catResponse);
+        }
+        catch (DbUpdateConcurrencyException ex)
+        {
+            logger.LogWarning(ex, "Conflicto de concurrencia al actualizar la categoria {id}", id);
+            var entry = ex.Entries.First();
+            var databaseValues = await entry.GetDatabaseValuesAsync(cancellationToken);
+
+            if (databaseValues is null)
+            {
+                return Result.Failure<CategoriaDtoResponse, DomainErrors>(CategoriaError.NotFound(id));
+            }
+            
+            // Recorremos todas las propiedades para ver los cambios
+            foreach (var property in entry.Metadata.GetProperties())
+            {
+                var propertyName = property.Name;
+                var valorQueIntentabaGuardar = entry.CurrentValues[propertyName];
+                var valorRealEnBd = databaseValues[propertyName];
+
+                // Si el valor del usuario es distinto al de la BD, hubo un choque en este campo específico
+                if (!Equals(valorQueIntentabaGuardar, valorRealEnBd))
+                {
+                    logger.LogWarning("Conflicto en la propiedad '{Property}': Tú querías guardar '{UserVal}', pero en BD hay '{DbVal}'", propertyName, valorQueIntentabaGuardar, valorRealEnBd);
+                }
+            }
+            
+            return Result.Failure<CategoriaDtoResponse, DomainErrors>(CategoriaError.Concurrency("La categoria ", id, "eliminado "));
+        }
     }
 
     public async Task<Result<bool, DomainErrors>> DeleteAsync(string id,  CancellationToken cancellationToken)
@@ -102,10 +132,33 @@ public class CategoriaService(ICategoriaRepository repository, IValidator<Catego
         
         if(catId.Funkos.Any()) return Result.Failure<bool, DomainErrors>(CategoriaError.BusinessRule(catId.Funkos.Count()));
         
-        await repository.DeleteAsync(id, cancellationToken);
-        
-        if (catId is null) {logger.LogWarning("Categoria {id} NO eliminada", id); return Result.Failure<bool, DomainErrors>(CategoriaError.NotFound("No se ha podido eliminar la Categoria"));}
-        logger.LogWarning("Categoria {id} eliminada correctamente", id);
-        return Result.Success<bool, DomainErrors>(true);
+        try
+        {
+            await repository.DeleteAsync(id, cancellationToken);
+
+            if (catId is null)
+            {
+                logger.LogWarning("Categoria {id} NO eliminada", id);
+                return Result.Failure<bool, DomainErrors>(
+                    CategoriaError.NotFound("No se ha podido eliminar la Categoria"));
+            }
+
+            logger.LogWarning("Categoria {id} eliminada correctamente", id);
+            return Result.Success<bool, DomainErrors>(true);
+        }
+        catch (DbUpdateConcurrencyException ex)
+        {
+            logger.LogWarning(ex, "Conflicto de concurrencia al actualizar la categoria {id}", id);
+            var entry = ex.Entries.First();
+            var databaseValues = await entry.GetDatabaseValuesAsync(cancellationToken);
+
+            if (databaseValues is null)
+            {
+                logger.LogWarning("La categoria {id} que intentabas borrar ya había sido eliminado por otro usuario", id);
+                return Result.Failure<bool, DomainErrors>(CategoriaError.NotFound(id));
+            }
+            
+            return Result.Failure<bool, DomainErrors>(CategoriaError.Concurrency("La categoria ", id, "eliminado "));
+        }
     }
 }

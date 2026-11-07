@@ -8,4 +8,6 @@ public static class FunkoError
 
     public static ValidationError BadRequest(string message) => ValidationError.Create(message);
     public static ConflictError Duplicate(string nombre) => ConflictError.Duplicate("Funko", nombre);
+    public static ConflictError Concurrency(string model, long id, string accion) => ConflictError.Concurrency(model, id.ToString(), accion);
+
 }

@@ -1,6 +1,7 @@
 ﻿using Funkos.Dto;
 using Funkos.Dto.Funko;
 using Funkos.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Funkos.Mappers;
 
@@ -13,6 +14,7 @@ public static class FunkoMapper
         CategoriaId = request.CategoriaId,
         ProveedorId = request.ProveedorId,
         Stock =  request.Stock
+        
     };
     
     public static Funko ToEntityUpdate(this FunkoUpdateDto request) => new Funko
@@ -33,6 +35,7 @@ public static class FunkoMapper
         funko.CategoriaId,
         funko.ProveedorId,
         funko.Stock,
+        funko.Imagen,
         funko.CreateAt,
         funko.UpdateAt,
         funko.DeleteAt

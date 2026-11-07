@@ -45,6 +45,10 @@ namespace Funkos.Migrations
                     b.Property<DateTime?>("UpdateAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("integer");
+
                     b.HasKey("IdY");
 
                     b.HasIndex("Name")
@@ -72,6 +76,9 @@ namespace Funkos.Migrations
                     b.Property<DateTime?>("DeleteAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Imagen")
+                        .HasColumnType("text");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
@@ -95,6 +102,10 @@ namespace Funkos.Migrations
 
                     b.Property<DateTime?>("UpdateAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 

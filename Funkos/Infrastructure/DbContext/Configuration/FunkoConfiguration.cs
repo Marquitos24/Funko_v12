@@ -37,5 +37,9 @@ public class FunkoConfiguration : IEntityTypeConfiguration<Funko>
         // Para no borrar los datos de un usurio en laBD ponemos un filtro para que si se elimina
         // los descarte de las otras consultas (en un filtro)
         builder.HasQueryFilter(p => !p.IsDeleted);
+        
+        //Para concurrencia
+        builder.Property(p => p.Version)
+            .IsConcurrencyToken();
     }
 }

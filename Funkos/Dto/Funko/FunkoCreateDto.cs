@@ -25,4 +25,6 @@ public record FunkoCreateDto
     public required string ProveedorId { get; set; }
     
     public required int Stock { get; set; }
+    
+    public IFormFile? Image { get; set; }
 }

@@ -33,7 +33,10 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Dto\Storage\" />
       <Folder Include="logs\" />
+      <Folder Include="wwwroot\.gitkeep\" />
+      <Folder Include="wwwroot\uploads\images\" />
     </ItemGroup>
 
 </Project>

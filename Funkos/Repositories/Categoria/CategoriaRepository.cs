@@ -42,9 +42,28 @@ public class CategoriaRepository  (AppDbContext db) : ICategoriaRepository
             categoria.Descripcion = updatedCategoria.Descripcion;
             categoria.UpdateAt = DateTime.UtcNow;
         
+            // Incrementamos la versión para que cambie en la BD y el token invalide modificaciones concurrentes
+            categoria.Version++;
+            
             await db.SaveChangesAsync(cancellationToken);
+            
+            // Mejora --> Refresca los valores desde la BD para asegurar que se trae la versión exacta guardada
+            await db.Entry(categoria).ReloadAsync(cancellationToken);
+            
             return categoria;
         }
+        
+        public async Task<bool> DeleteAsync(string idY, CancellationToken cancellationToken = default)
+        {
+            var categoria = await db.Categorias.FirstOrDefaultAsync(f => f.IdY == idY, cancellationToken);
+            if (categoria is null) return false;
+
+            db.Categorias.Remove(categoria);
+            await db.SaveChangesAsync(cancellationToken);
+            await db.Entry(categoria).ReloadAsync(cancellationToken);
+            return true;
+        }
+        
         public async Task<bool> ExistsAsync(string idY, CancellationToken cancellationToken = default)
         {
             return await db.Categorias.AnyAsync(f => f.IdY == idY, cancellationToken);
@@ -56,13 +75,5 @@ public class CategoriaRepository  (AppDbContext db) : ICategoriaRepository
         }
 
     
-        public async Task<bool> DeleteAsync(string idY, CancellationToken cancellationToken = default)
-        {
-            var categoria = await db.Categorias.FirstOrDefaultAsync(f => f.IdY == idY, cancellationToken);
-            if (categoria is null) return false;
-
-            db.Categorias.Remove(categoria);
-            await db.SaveChangesAsync(cancellationToken);
-            return true;
-        }
+        
 }

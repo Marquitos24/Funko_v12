@@ -14,4 +14,6 @@ public record Categoria
     
     public DateTime CreateAt {get; set; }
     public DateTime? UpdateAt {get; set; } 
+    
+    public int Version { get; set; } = 1;
 }

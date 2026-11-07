@@ -23,4 +23,8 @@ public record Funko
     
     public bool IsDeleted {get; set; }
     public DateTime? DeleteAt {get; set; }
+
+    public string? Imagen { get; set; } = "default.png";
+    
+    public int Version { get; set; } = 1;
 }

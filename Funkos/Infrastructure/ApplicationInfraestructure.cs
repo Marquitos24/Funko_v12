@@ -1,4 +1,5 @@
 ﻿using Funkos.Cache;
+using Funkos.Infrastructure.Storage;
 using Funkos.Mongo;
 using Funkos.Repositories;
 using Funkos.Repositories.Categoria;
@@ -7,6 +8,7 @@ using Funkos.Service;
 using Funkos.Service.Categoria;
 using Funkos.Service.Decorator;
 using Funkos.Service.Proveedor;
+using Funkos.Service.Storage;
 using MongoDB.Driver;
 using StackExchange.Redis;
 
@@ -44,11 +46,15 @@ public static class ApplicationInfraestructure
         //REDIS - CACHE
         //IConnectionMultiplexer ==> Objeto principal de StackExchange.Redis que gestiona las conexiones con el servidor Redis.
         // Desde él se puede obtener una BD Redis
-            
         services.AddSingleton<IConnectionMultiplexer>(sp => ConnectionMultiplexer.Connect(
                 configuration["Redis:ConnectionString"]!));
 
         services.AddSingleton<ICacheService, RedisCacheService>();
+        
+        //IMAGES
+        services.AddScoped<IStorageService, FileSystemStorageService>();
+        services.Configure<StorageSettings>(
+            configuration.GetSection("Storage"));
 
         return services;
     }

@@ -28,6 +28,10 @@ public class CategoriaConfiguration: IEntityTypeConfiguration<Categoria>
             .WithOne(f => f.Categoria)           // Un Funko tiene una única Categoria
             .HasForeignKey(f => f.CategoriaId)   // Usando la clave ajena CategoriaId
             .OnDelete(DeleteBehavior.Restrict);         // Evita borrar la categoría si tiene funkos dentro
+        
+        //Concurrencia
+        builder.Property(p => p.Version)
+            .IsConcurrencyToken();
     }
     
 }

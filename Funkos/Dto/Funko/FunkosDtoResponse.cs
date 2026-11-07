@@ -9,6 +9,7 @@ public record FunkosDtoResponse(
     string? CategoriaId,
     string ProveedorId,
     int Stock,
+    string? image,
     DateTime CreateAt,
     DateTime? UpdateAt,
     DateTime? DeleteAt

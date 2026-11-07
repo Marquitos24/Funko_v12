@@ -36,6 +36,8 @@ public sealed record ConflictError(string Message) : DomainErrors(Message)
 {
     public static ConflictError Duplicate(string resourceType, string value) => new($"Ya existe un {resourceType} con el nombre '{value}'");
     
+    public static ConflictError Concurrency(string model, string id, string accion) => new($"{model} {id} ha sido {accion} por otro usuario. Actualiza los datos e inténtalo de nuevo.");
+
 }
 
 // 403 Forbidden

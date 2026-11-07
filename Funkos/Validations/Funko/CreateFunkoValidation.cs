@@ -9,6 +9,9 @@ namespace Funkos.Validations;
 
 public class CreateFunkoValidationAsync : AbstractValidator<FunkoCreateDto>
 {
+    private readonly string[] _allowedExtensions = [".jpg", ".jpeg", ".png", ".webp"];
+    private readonly long _maxFileSize = 5 * 1024 * 1024; // 5 MB
+    
     public CreateFunkoValidationAsync(ICategoriaRepository categoriaRepository,
         IProveedorRepository proveedorRepository, IFunkoRepository funkoRepository)
     {
@@ -45,5 +48,21 @@ public class CreateFunkoValidationAsync : AbstractValidator<FunkoCreateDto>
             .MustAsync(async (id, cancellation) =>
                 await proveedorRepository.ExistsAsync(id, cancellation))
             .WithMessage("El proveedor no existe");
+        
+        //IMAGEN
+        When(x => x.Image != null, () =>
+        {
+            RuleFor(x => x.Image!.Length)
+                .LessThanOrEqualTo(_maxFileSize)
+                .WithMessage($"El tamaño del archivo no puede superar los {_maxFileSize / 1024 / 1024} MB");
+
+            RuleFor(x => x.Image!.FileName)
+                .Must(fileName => 
+                {
+                    var ext = Path.GetExtension(fileName).ToLowerInvariant();
+                    return Array.Exists(_allowedExtensions, e => e == ext);
+                })
+                .WithMessage($"Formato de archivo no válido. Extensiones permitidas: {string.Join(", ", _allowedExtensions)}");
+        });
     }
 }
