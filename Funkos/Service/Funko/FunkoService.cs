@@ -80,9 +80,16 @@ public class FunkoService(IFunkoRepository repository, IValidator<FunkoCreateDto
         // --- GESTIÓN DE LA IMAGEN EN CREACIÓN ---
         if (newFunko.Image is not null && newFunko.Image.Length > 0)
         {
-            // 1. Guardamos la imagen en la carpeta "funkos" usando el servicio
-            var fileName = await storage.StoreAsync(newFunko.Image, "funkos", cancellationToken);
-            // 2. Obtenemos su URL pública relativa y se la asignamos al modelo
+            var storageResult = await storage.StoreAsync(newFunko.Image, "funkos", cancellationToken);
+            
+            if (storageResult.IsFailure)
+            {
+                logger.LogWarning("Error al guardar la imagen del Funko");
+                return Result.Failure<FunkosDtoResponse, DomainErrors>(storageResult.Error);
+            }
+            // Extraemos el nombre del archivo y generamos la URL
+            var fileName = storageResult.Value;
+            // Obtenemos su URL pública relativa y se la asignamos al modelo
             model.Imagen = storage.GetUrl(fileName, "funkos");
         }
         else
@@ -116,14 +123,21 @@ public class FunkoService(IFunkoRepository repository, IValidator<FunkoCreateDto
         
         //Convertimos el RequestDTO al Modelo y validamos, si es null salta error
         var funkoModel = FunkoMapper.ToEntityUpdate(updatedFunko);
-        if (funkoModel is null) return Result.Failure<FunkosDtoResponse, DomainErrors>(FunkoError.NotFound()); logger.LogWarning("No guardo el Funko {id}", id);
+        if (funkoModel is null) {logger.LogWarning("No guardo el Funko {id}", id); return Result.Failure<FunkosDtoResponse, DomainErrors>(FunkoError.NotFound());} 
         //Comprobamos que el Categoria actualizado NO tiene un nombre igual a otro Categoria
      
         // --- GESTIÓN DE LA IMAGEN EN ACTUALIZACIÓN ---
         if (updatedFunko.Image is not null && updatedFunko.Image.Length > 0)
         {
+            var storageResult = await storage.StoreAsync(updatedFunko.Image, "funkos", cancellationToken);
+            
+            if (storageResult.IsFailure)
+            {
+                logger.LogWarning("Error al guardar la imagen del Funko");
+                return Result.Failure<FunkosDtoResponse, DomainErrors>(storageResult.Error);
+            }
             // Guardamos la nueva imagen
-            var fileName = await storage.StoreAsync(updatedFunko.Image, "funkos", cancellationToken);
+            var fileName = storageResult.Value;
             funkoModel.Imagen = storage.GetUrl(fileName, "funkos");
 
             // Borramos la imagen vieja del disco si no es la por defecto
@@ -139,10 +153,7 @@ public class FunkoService(IFunkoRepository repository, IValidator<FunkoCreateDto
             funkoModel.Imagen = funkoId.Imagen;
         }
         
-        //Comprobamos que el funko actualizado NO tiene un nombre igual a otro Funko
-        //bool yaExiste = await repository.ExistsByNameAsync(funkoModel.Name, id, cancellationToken);
-       // if (yaExiste) { logger.LogWarning("Funko {id} con nombre duplicado", id); return Result.Failure<FunkosDtoResponse, DomainErrors>(FunkoError.Duplicate(funkoModel.Name));} 
-
+       
        try
        {
            //Actualizamos Funko y comprobamos que no sea null, si lo es salta error

@@ -1,4 +1,7 @@
-﻿namespace Funkos.Service.Storage;
+﻿using CSharpFunctionalExtensions;
+using Funkos.Errors;
+
+namespace Funkos.Service.Storage;
 
 public interface IStorageService
 {
@@ -10,17 +13,17 @@ public interface IStorageService
     /// <summary>
     /// Almacena un archivo y devuelve el nombre generado
     /// </summary>
-    Task<string> StoreAsync(IFormFile file, string? folder = null, CancellationToken cancellationToken = default);
+    Task<Result<string, DomainErrors>> StoreAsync(IFormFile file, string? folder = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Almacena un archivo desde un stream
     /// </summary>
-    Task<string> StoreAsync(Stream stream, string fileName, string? folder = null, CancellationToken cancellationToken = default);
+    Task<Result<string, DomainErrors>> StoreAsync(Stream stream, string fileName, string? folder = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Carga un archivo como stream
     /// </summary>
-    Task<Stream> LoadAsStreamAsync(string fileName, string? folder = null, CancellationToken cancellationToken = default);
+    Task<Result<Stream, DomainErrors>> LoadAsStreamAsync(string fileName, string? folder = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Obtiene la ruta completa del archivo

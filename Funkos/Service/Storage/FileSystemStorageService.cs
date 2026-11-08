@@ -1,4 +1,6 @@
-﻿using Funkos.Exceptions;
+﻿using CSharpFunctionalExtensions;
+using Funkos.Errors;
+using Funkos.Exceptions;
 using Funkos.Infrastructure.Storage;
 using Microsoft.Extensions.Options;
 
@@ -48,26 +50,35 @@ public class FileSystemStorageService(IWebHostEnvironment env,
     /// Almacena un archivo recibido desde una petición HTTP (IFormFile), aplicando validaciones de seguridad,
     /// renombrándolo de forma única y guardándolo en la carpeta.
     /// </summary>
-    public async Task<string> StoreAsync(IFormFile file, string? folder = null, CancellationToken cancellationToken = default)
+    public async Task<Result<string, DomainErrors>> StoreAsync(IFormFile file, string? folder = null, CancellationToken cancellationToken = default)
     {
         // Validar que el archivo no sea nulo o esté vacío
-        if (file is null || file.Length == 0) throw new ArgumentException("El archivo es nulo o vacío", nameof(file));
+        if (file is null || file.Length == 0) return Result.Failure<string, DomainErrors>(StorageError.BadRequest("El archivo es nulo o vacío"));
 
         // Validar que no supere el tamaño máximo permitido configurado
-        if (file.Length > settings.Value.MaxFileSize) throw new FileSizeExceededException($"El archivo excede el tamaño máximo de {settings.Value.MaxFileSize / 1024 / 1024}MB");
+        if (file.Length > settings.Value.MaxFileSize) return Result.Failure<string, DomainErrors>(StorageError.BadRequest($"El archivo excede el tamaño máximo de {settings.Value.MaxFileSize / 1024 / 1024}MB"));
 
         // Validar la extensión física del archivo (.jpg, .png, etc.)
         var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
-        if (!settings.Value.AllowedExtensions.Contains(extension)) throw new InvalidFileTypeException($"Tipo de archivo no permitido: {extension}");
+        if (!settings.Value.AllowedExtensions.Contains(extension)) return Result.Failure<string, DomainErrors>(StorageError.BadRequest($"Tipo de archivo no permitido: {extension}"));
 
         // Validar el Content-Type declarado - tipo MIME ==> Indica qué tipo de contenido tiene un archivo o dato
         if (!string.IsNullOrEmpty(file.ContentType) && !settings.Value.AllowedContentTypes.Contains(
                 file.ContentType, StringComparer.OrdinalIgnoreCase))
-            throw new InvalidFileTypeException($"Tipo MIME no permitido: {file.ContentType}");
+            return Result.Failure<string, DomainErrors>(StorageError.BadRequest($"Tipo MIME no permitido: {file.ContentType}"));
 
         // Generar un nombre único para evitar colisiones y calcular las rutas de destino
         var fileName = GenerateFileName(file.FileName);
-        var folderPath = GetFolderPath(folder);
+        
+        string folderPath;
+        try
+        {
+            folderPath = GetFolderPath(folder);
+        }
+        catch (InvalidFileTypeException ex)
+        {
+            return Result.Failure<string, DomainErrors>(StorageError.BadRequest(ex.Message));
+        }
         var filePath = Path.Combine(folderPath, fileName);
 
         // Asegurar que la carpeta de destino exista físicamente
@@ -78,25 +89,33 @@ public class FileSystemStorageService(IWebHostEnvironment env,
         await file.CopyToAsync(stream, cancellationToken);
         
         logger.LogInformation("Archivo guardado: {FileName} ({Size} bytes)", fileName, file.Length);
-
-        return fileName;
+        
+        return Result.Success<string, DomainErrors>(fileName);
     }
 
     /// <summary>
     /// Sobrecarga para almacenar un archivo directamente desde un Stream genérico aplicando las mismas reglas de validación.
     /// </summary>
-    public async Task<string> StoreAsync(Stream stream, string fileName, string? folder = null, CancellationToken cancellationToken = default)
+    public async Task<Result<string, DomainErrors>> StoreAsync(Stream stream, string fileName, string? folder = null, CancellationToken cancellationToken = default)
     {
         // Verificar que el stream provisto sea válido
         if (stream is null) throw new ArgumentNullException(nameof(stream));
         
         // Validar la extensión del archivo a partir de su nombre
         var extension = Path.GetExtension(fileName).ToLowerInvariant();
-        if (!settings.Value.AllowedExtensions.Contains(extension)) throw new InvalidFileTypeException($"Tipo de archivo no permitido: {extension}");
+        if (!settings.Value.AllowedExtensions.Contains(extension)) return Result.Failure<string, DomainErrors>(StorageError.BadRequest($"Tipo de archivo no permitido: {extension}"));
 
         // Generar nombre único y calcular ruta en disco
         var fileNameGenerated = GenerateFileName(fileName);
-        var folderPath = GetFolderPath(folder);
+        string folderPath;
+        try
+        {
+            folderPath = GetFolderPath(folder);
+        }
+        catch (InvalidFileTypeException ex)
+        {
+            return Result.Failure<string, DomainErrors>(StorageError.BadRequest(ex.Message));
+        }
         var filePath = Path.Combine(folderPath, fileNameGenerated);
 
         // Crear directorio si no existe y guardar el archivo mediante copia de streams
@@ -104,24 +123,23 @@ public class FileSystemStorageService(IWebHostEnvironment env,
 
         await using var fileStream = new FileStream(filePath, FileMode.Create);
         await stream.CopyToAsync(fileStream, cancellationToken);
-
-        return fileNameGenerated;
+        
+        return Result.Success<string, DomainErrors>(fileNameGenerated);
     }
 
     /// <summary>
     /// Carga un archivo existente desde el disco y lo devuelve en formato de lectura (Stream).
     /// </summary>
-    public Task<Stream> LoadAsStreamAsync(string fileName, string? folder = null, CancellationToken cancellationToken = default)
+    public Task<Result<Stream, DomainErrors>> LoadAsStreamAsync(string fileName, string? folder = null, CancellationToken cancellationToken = default)
     {
         // Obtener la ruta física completa del archivo
         var filePath = GetFilePath(fileName, folder);
         
         // Lanzar excepción si el archivo no se encuentra físicamente
-        if (!File.Exists(filePath)) throw new FileNotFoundException($"Archivo no encontrado: {fileName}");
-
+        if (!File.Exists(filePath)) return Task.FromResult(Result.Failure<Stream, DomainErrors>(StorageError.BadRequest($"Archivo no encontrado: {fileName}")));
         // Abrir el archivo en modo lectura y devolverlo como Stream
         var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-        return Task.FromResult<Stream>(stream);
+        return Task.FromResult(Result.Success<Stream, DomainErrors>(stream));
     }
 
     /// <summary>
@@ -193,18 +211,15 @@ public class FileSystemStorageService(IWebHostEnvironment env,
     /// </summary>
     private string GetFolderPath(string? folder)
     {
-        // Si no se especifica carpeta, se usa la raíz por defecto
         if (string.IsNullOrEmpty(folder)) return _rootPath;
 
-        // Combinar ruta raíz con la subcarpeta solicitada
         var full = Path.GetFullPath(Path.Combine(_rootPath, folder));
         
-        // Validación de seguridad crítica: Evita que mediante caracteres como "../" salgan de la carpeta permitida
         if (!full.Equals(_rootPath, StringComparison.OrdinalIgnoreCase) &&
             !full.StartsWith(_rootPath + Path.DirectorySeparatorChar,
                 StringComparison.OrdinalIgnoreCase))
             throw new InvalidFileTypeException($"Carpeta no permitida: {folder}");
-
+        
         return full;
     }
 

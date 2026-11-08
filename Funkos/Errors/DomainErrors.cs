@@ -26,9 +26,9 @@ public sealed record NotFoundError(string Message) : DomainErrors(Message)
 public sealed record ValidationError(string Message, Dictionary<string, string[]>? Errors = null) : DomainErrors(Message)
 {
     public static ValidationError Create(string message) => new(message);
-    public static ValidationError Update(string message) => new(message);
 
     public static ValidationError WithFieldErrors(Dictionary<string, string[]> errors) => new("Errores de validación", errors);
+
 }
 
 // 409 Conflict
